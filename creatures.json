@@ -1,0 +1,312 @@
+
+  [
+    {
+      "creaturetype": "player",
+      "creatureset": "none",
+      "level": 1,
+      "maxhp": 20,
+      "regen": 1,
+      "strength": 5,
+      "dexterity": 5,
+      "armour": 0,
+      "inventory": 1
+    },
+    {
+      "creaturetype": "rat",
+      "creatureset": "animal",
+      "level": 1,
+      "maxhp": 8,
+      "regen": 1,
+      "strength": 3,
+      "dexterity": 3,
+      "armour": 0,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "centipede",
+      "creatureset": "animal",
+      "level": 2,
+      "maxhp": 12,
+      "regen": 1,
+      "strength": 1,
+      "dexterity": 2,
+      "armour": 2,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "spider",
+      "creatureset": "animal",
+      "level": 3,
+      "maxhp": 12,
+      "regen": 1,
+      "strength": 3,
+      "dexterity": 5,
+      "armour": 0,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "wolf",
+      "creatureset": "animal",
+      "level": 4,
+      "maxhp": 20,
+      "regen": 1,
+      "strength": 6,
+      "dexterity": 7,
+      "armour": 1,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "scorpion",
+      "creatureset": "animal",
+      "level": 5,
+      "maxhp": 16,
+      "regen": 1,
+      "strength": 7,
+      "dexterity": 5,
+      "armour": 3,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "bear",
+      "creatureset": "animal",
+      "level": 6,
+      "maxhp": 30,
+      "regen": 1,
+      "strength": 10,
+      "dexterity": 6,
+      "armour": 2,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "deutero",
+      "creatureset": "animal",
+      "level": 7,
+      "maxhp": 35,
+      "regen": 1,
+      "strength": 12,
+      "dexterity": 4,
+      "armour": 3,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "manticore",
+      "creatureset": "animal",
+      "level": 8,
+      "maxhp": 40,
+      "regen": 1,
+      "strength": 15,
+      "dexterity": 7,
+      "armour": 1,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "phoenix",
+      "creatureset": "animal",
+      "level": 9,
+      "maxhp": 25,
+      "regen": 1,
+      "strength": 18,
+      "dexterity": 7,
+      "armour": 0,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "goblin",
+      "creatureset": "goblinoid",
+      "level": 1,
+      "maxhp": 10,
+      "regen": 1,
+      "strength": 3,
+      "dexterity": 4,
+      "armour": 0,
+      "inventory": 1
+    },
+    {
+      "creaturetype": "goblinsoldier",
+      "creatureset": "goblinoid",
+      "level": 2,
+      "maxhp": 12,
+      "regen": 1,
+      "strength": 4,
+      "dexterity": 5,
+      "armour": 1,
+      "inventory": 1
+    },
+    {
+      "creaturetype": "orcslave",
+      "creatureset": "goblinoid",
+      "level": 3,
+      "maxhp": 18,
+      "regen": 1,
+      "strength": 6,
+      "dexterity": 5,
+      "armour": 0,
+      "inventory": 1
+    },
+    {
+      "creaturetype": "goblinshaman",
+      "creatureset": "goblinoid",
+      "level": 4,
+      "maxhp": 16,
+      "regen": 1,
+      "strength": 5,
+      "dexterity": 6,
+      "armour": 2,
+      "inventory": 1
+    },
+    {
+      "creaturetype": "orc",
+      "creatureset": "goblinoid",
+      "level": 5,
+      "maxhp": 25,
+      "regen": 1,
+      "strength": 7,
+      "dexterity": 5,
+      "armour": 1,
+      "inventory": 1
+    },
+    {
+      "creaturetype": "orcsoldier",
+      "creatureset": "goblinoid",
+      "level": 6,
+      "maxhp": 30,
+      "regen": 1,
+      "strength": 9,
+      "dexterity": 6,
+      "armour": 4,
+      "inventory": 1
+    },
+    {
+      "creaturetype": "orcshaman",
+      "creatureset": "goblinoid",
+      "level": 7,
+      "maxhp": 30,
+      "regen": 1,
+      "strength": 7,
+      "dexterity": 7,
+      "armour": 1,
+      "inventory": 1
+    },
+    {
+      "creaturetype": "troll",
+      "creatureset": "goblinoid",
+      "level": 8,
+      "maxhp": 60,
+      "regen": 5,
+      "strength": 16,
+      "dexterity": 3,
+      "armour": 2,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "orccaptain",
+      "creatureset": "goblinoid",
+      "level": 9,
+      "maxhp": 50,
+      "regen": 1,
+      "strength": 10,
+      "dexterity": 7,
+      "armour": 6,
+      "inventory": 1
+    },
+    {
+      "creaturetype": "skeleton",
+      "creatureset": "undead",
+      "level": 4,
+      "maxhp": 25,
+      "regen": 0,
+      "strength": 9,
+      "dexterity": 3,
+      "armour": 0,
+      "inventory": 1
+    },
+    {
+      "creaturetype": "mummy",
+      "creatureset": "undead",
+      "level": 5,
+      "maxhp": 35,
+      "regen": 0,
+      "strength": 9,
+      "dexterity": 3,
+      "armour": 0,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "wraith",
+      "creatureset": "undead",
+      "level": 6,
+      "maxhp": 30,
+      "regen": 0,
+      "strength": 4,
+      "dexterity": 9,
+      "armour": 0,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "ghoul",
+      "creatureset": "undead",
+      "level": 7,
+      "maxhp": 30,
+      "regen": 3,
+      "strength": 9,
+      "dexterity": 7,
+      "armour": 3,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "banshee",
+      "creatureset": "undead",
+      "level": 8,
+      "maxhp": 40,
+      "regen": 0,
+      "strength": 8,
+      "dexterity": 9,
+      "armour": 0,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "sentinel",
+      "creatureset": "undead",
+      "level": 9,
+      "maxhp": 40,
+      "regen": 0,
+      "strength": 12,
+      "dexterity": 9,
+      "armour": 5,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "imp",
+      "creatureset": "demonic",
+      "level": 4,
+      "maxhp": 20,
+      "regen": 2,
+      "strength": 5,
+      "dexterity": 10,
+      "armour": 0,
+      "inventory": 0
+    },
+    {
+      "creaturetype": "demon",
+      "creatureset": "demonic",
+      "level": 6,
+      "maxhp": 35,
+      "regen": 2,
+      "strength": 8,
+      "dexterity": 9,
+      "armour": 3,
+      "inventory": 1
+    },
+    {
+      "creaturetype": "baron",
+      "creatureset": "demonic",
+      "level": 8,
+      "maxhp": 40,
+      "regen": 2,
+      "strength": 10,
+      "dexterity": 8,
+      "armour": 3,
+      "inventory": 1
+    }
+  ]
+

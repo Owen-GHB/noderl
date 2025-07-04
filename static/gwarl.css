@@ -1,0 +1,52 @@
+body {
+	background-color: #000000;
+	color: #BBBBBB;
+}
+#game {
+	background-color:#302010;
+	width:1000px;
+	height:612px;
+}
+#sidebar {
+	float:left;
+	outline: 1px outset #100800;
+	width:388px;
+	height:612px;
+}
+#movelog {
+	height:84px;
+	overflow-y:scroll;
+	background-color: #000000;
+	border: 2px inset #100800;
+}
+#mapcontainer {
+	margin-left:388px;
+	height:612px;
+}
+#loadingscreen {
+	background-color: #201008;
+	border: 4px groove #100800;
+	height:604px;
+}
+#menu {
+	display:none;
+	background-color: #201008;
+	border: 4px groove #100800;
+	height:604px;
+}
+#deathscreen {
+	background-color: #201008;
+	display:none;
+	border: 4px groove #100800;
+	height:604px;
+}
+#map {
+	display:none;
+	background-color: #000000;
+}
+#outtakes {
+	background-color: #555555;
+}
+.graphic {
+	display: none;
+}

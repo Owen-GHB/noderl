@@ -1,0 +1,177 @@
+[
+    {
+      "category": "consumable",
+      "class": "potion",
+      "name": "mend wounds",
+      "affects": {"hp":15},
+      "rarity": 1
+    },
+    {
+      "category": "equipment",
+      "class": "ring",
+      "name": "dexterity",
+      "affects": {"dexterity":1},
+      "rarity": 1
+    },
+    {
+      "category": "equipment",
+      "class": "ring",
+      "name": "magic",
+      "affects": {"maxmana":1},
+      "rarity": 1
+    },
+    {
+      "category": "equipment",
+      "class": "ring",
+      "name": "strength",
+      "affects": {"strength":1},
+      "rarity": 1
+    },
+    {
+      "category": "equipment",
+      "class": "weapon",
+      "name": "staff",
+      "affects": {"bash":4,"slash":1,"pierce":0,"block":3,"acc":2},
+      "rarity": 7
+    },
+    {
+      "category": "equipment",
+      "class": "weapon",
+      "name": "knife",
+      "affects": {"bash":2,"slash":3,"pierce":0,"block":2,"acc":1},
+      "rarity": 1
+    },
+    {
+      "category": "equipment",
+      "class": "weapon",
+      "name": "shortsword",
+      "affects": {"bash":2,"slash":3,"pierce":1,"block":2,"acc":2},
+      "rarity": 3
+    },
+    {
+      "category": "equipment",
+      "class": "weapon",
+      "name": "broadsword",
+      "affects": {"bash":2,"slash":5,"pierce":1,"block":4,"acc":2},
+      "rarity": 5
+    },
+    {
+      "category": "equipment",
+      "class": "weapon",
+      "name": "handaxe",
+      "affects": {"bash":3,"slash":3,"pierce":0,"block":1,"acc":0},
+      "rarity": 2
+    },
+    {
+      "category": "equipment",
+      "class": "weapon",
+      "name": "waraxe",
+      "affects": {"bash":3,"slash":4,"pierce":0,"block":2,"acc":0},
+      "rarity": 4
+    },
+    {
+      "category": "equipment",
+      "class": "weapon",
+      "name": "cudgel",
+      "affects": {"bash":3,"slash":2,"pierce":1,"block":1,"acc":0},
+      "rarity": 1
+    },
+    {
+      "category": "equipment",
+      "class": "weapon",
+      "name": "mace",
+      "affects": {"bash":4,"slash":2,"pierce":0,"block":1,"acc":0},
+      "rarity": 4
+    },
+    {
+      "category": "equipment",
+      "class": "weapon",
+      "name": "spear",
+      "affects": {"bash":1,"slash":3,"pierce":1,"block":3,"acc":1},
+      "rarity": 1
+    },
+    {
+      "category": "equipment",
+      "class": "weapon",
+      "name": "spetum",
+      "affects": {"bash":1,"slash":4,"pierce":2,"block":3,"acc":1},
+      "rarity": 3
+    },
+    {
+      "category": "equipment",
+      "class": "weapon",
+      "name": "billhook",
+      "affects": {"bash":2,"slash":4,"pierce":2,"block":3,"acc":0},
+      "rarity": 5
+    },
+    {
+      "category": "equipment",
+      "class": "weapon",
+      "name": "demonsword",
+      "affects": {"bash":2,"slash":6,"pierce":1,"block":3,"acc":1},
+      "rarity": 9
+    },
+    {
+      "category": "equipment",
+      "class": "weapon",
+      "name": "demonwhip",
+      "affects": {"bash":3,"slash":5,"pierce":1,"block":0,"acc":0},
+      "rarity": 9
+    },
+    {
+      "category": "equipment",
+      "class": "weapon",
+      "name": "demontrident",
+      "affects": {"bash":1,"slash":6,"pierce":3,"block":3,"acc":0},
+      "rarity": 9
+    },
+    {
+      "category": "equipment",
+      "class": "shield",
+      "name": "wooden",
+      "affects": {"block":3,"armour":0,"pen":0},
+      "rarity": 1
+    },
+    {
+      "category": "equipment",
+      "class": "shield",
+      "name": "kite",
+      "affects": {"block":6,"armour":0,"pen":2},
+      "rarity": 6
+    },
+    {
+      "category": "equipment",
+      "class": "helmet",
+      "name": "steel",
+      "affects": {"block":2,"armour":0,"pen":1},
+      "rarity": 4
+    },
+    {
+      "category": "equipment",
+      "class": "armour",
+      "name": "robes",
+      "affects": {"block":0,"armour":1,"pen":0},
+      "rarity": 4
+    },
+    {
+      "category": "equipment",
+      "class": "armour",
+      "name": "leather",
+      "affects": {"block":0,"armour":2,"pen":0},
+      "rarity": 2
+    },
+    {
+      "category": "equipment",
+      "class": "armour",
+      "name": "chainmail",
+      "affects": {"block":0,"armour":4,"pen":4},
+      "rarity": 4
+    },
+    {
+      "category": "equipment",
+      "class": "armour",
+      "name": "plate",
+      "affects": {"block":4,"armour":4,"pen":8},
+      "rarity": 6
+    }
+]
