@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { Terrain } = require('./mapclass.js');
 const { Dungeon } = require('./dungeon.js');
+const { saveGame, loadGame, extractGameStateFromSession, applyGameStateToSession } = require('./savefile.js');
 
 router.post('/', (req, res) => {
   // Retrieve the necessary session variables
@@ -18,16 +19,18 @@ router.post('/', (req, res) => {
   const dungeonSpace = new Terrain(boardSize, terrain);
   let dungeon = new Dungeon(dungeonSpace, creatures, items, explored, decals, visible);
 
-  // Save the session to persist the changes
-  req.session.save((err) => {
-    if (err) {
-      console.error('Error saving session:', err);
-      // Handle the error
-    } else {
+  // Save game state to file using session ID as filename
+  const gameState = extractGameStateFromSession(req.session);
+  saveGame(req.sessionID, gameState)
+    .then(() => {
       // Return the response with the necessary data
-		res.json(dungeon.getMinimap());
-    }
-  });
+      res.json(dungeon.getMinimap());
+    })
+    .catch((err) => {
+      console.error('Error saving game state:', err);
+      // Still return response even if save fails
+      res.json(dungeon.getMinimap());
+    });
 });
 
 module.exports = router;

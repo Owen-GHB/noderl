@@ -1,6 +1,9 @@
 # dependencies
 node_modules/
 
+# saved games
+save/
+
 # logs
 npm-debug.log*
 yarn-debug.log*

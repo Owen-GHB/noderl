@@ -4,6 +4,7 @@ const router = express.Router();
 const { Terrain, DungeonSpace } = require('./mapclass.js');
 const { Dungeon } = require('./dungeon.js');
 const fs = require('fs');
+const { saveGame, loadGame, extractGameStateFromSession, applyGameStateToSession } = require('./savefile.js');
 
 function buildRandomPath(toFill, sectorSpace) {
   let step = 0;
@@ -539,9 +540,22 @@ router.post('/', (req, res) => {
     }
     req.session.currentFloor = 1;
   }
-  let outputs = dungeon.getOutputs(globals);
-  outputs.maprefresh = globals.mapRefresh;
-  res.json(JSON.stringify(outputs));
+  
+  // Save game state to file using session ID as filename
+  const gameState = extractGameStateFromSession(req.session);
+  saveGame(req.sessionID, gameState)
+    .then(() => {
+      let outputs = dungeon.getOutputs(globals);
+      outputs.maprefresh = globals.mapRefresh;
+      res.json(JSON.stringify(outputs));
+    })
+    .catch((err) => {
+      console.error('Error saving game state:', err);
+      // Still return response even if save fails
+      let outputs = dungeon.getOutputs(globals);
+      outputs.maprefresh = globals.mapRefresh;
+      res.json(JSON.stringify(outputs));
+    });
 });
 
 module.exports = router;
