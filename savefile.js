@@ -59,7 +59,6 @@ async function saveGame(saveFileName, gameState) {
     const saveFilePath = path.join(SAVE_DIR, `${saveFileName}.json`);
     await fs.writeFile(saveFilePath, JSON.stringify(saveData, null, 2), 'utf8');
     
-    console.log(`Game saved successfully to: ${saveFilePath}`);
   } catch (error) {
     console.error('Error saving game:', error);
     throw error;
@@ -176,9 +175,7 @@ async function deleteSaveFile(saveFileName) {
     }
     
     await fs.unlink(saveFilePath);
-    console.log(`Save file deleted: ${saveFilePath}`);
   } catch (error) {
-    console.error('Error deleting save file:', error);
     throw error;
   }
 }
