@@ -110,16 +110,9 @@ router.post('/', async (req, res) => { // Added async here
     // Player is dead, don't save. Just return the game state (which includes death message).
     console.log(`Player is dead. Game state for ${saveFileName} not saved.`);
     let outputs = dungeon.getOutputs(globals);
-      outputs.mapRefresh = globals.mapRefresh;
-      res.json(JSON.stringify(outputs));
-    })
-    .catch((err) => {
-      console.error('Error saving game state:', err);
-      // Still return response even if save fails
-      let outputs = dungeon.getOutputs(globals);
-      outputs.mapRefresh = globals.mapRefresh;
-      res.json(JSON.stringify(outputs));
-    });
+    outputs.mapRefresh = globals.mapRefresh;
+    res.json(JSON.stringify(outputs));
+    // Removed extraneous .catch() and parenthesis as saveGame is not called here.
 });
 
 module.exports = router;
