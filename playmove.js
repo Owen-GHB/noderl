@@ -112,7 +112,8 @@ router.post('/', async (req, res) => { // Added async here
     let outputs = dungeon.getOutputs(globals);
     outputs.mapRefresh = globals.mapRefresh;
     res.json(JSON.stringify(outputs));
-    // Removed extraneous .catch() and parenthesis as saveGame is not called here.
-});
+  } // This closes the 'else' block
+
+}); // This closes router.post('/', async (req, res) => { ... });
 
 module.exports = router;
