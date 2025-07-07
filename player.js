@@ -2,15 +2,16 @@ const { Humanoid } = require('./humanoid.js');
 const { Item } = require('./item.js');
 
 class Player extends Humanoid {
-  constructor(position, playername, gender, hairstyle) {
+  constructor(position, playername, gender, hairstyle) { // Changed 'name' back to 'playername'
     super("player", position);
     this.creaturetype = "player";
+    // this.name = name; // Removed redundant 'name' property
     this.position = position;
     this.alive = true;
     this.waiting = true;
     
     // Add cosmetics
-    this.playername = playername;
+    this.playername = playername; // This is the correct property for the character's name
     this.gender = gender;
     this.hairstyle = hairstyle;
     

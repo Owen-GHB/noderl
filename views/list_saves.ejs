@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load Game</title>
+    <link rel="stylesheet" href="/gwarl.css">
+    <style>
+        .save-list li {
+            margin-bottom: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+        .save-list a {
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select a Game to Load</h1>
+        <% if (saveFiles && saveFiles.length > 0) { %>
+            <ul class="save-list">
+                <% saveFiles.forEach(file => { %>
+                    <li>
+                        <a href="/load-game/<%= file.fileName %>">
+                            <strong><%= file.fileName %></strong>
+                        </a>
+                        <br>
+                        <small>Last Saved: <%= new Date(file.lastModified).toLocaleString() %></small>
+                        <br>
+                        <small>Floor: <%= file.currentFloor %></small>
+                    </li>
+                <% }); %>
+            </ul>
+        <% } else { %>
+            <p>No save files found.</p>
+        <% } %>
+        <p><a href="/">Back to Main Menu</a></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start New Game</title>
+    <link rel="stylesheet" href="/gwarl.css">
+</head>
+<body>
+    <div class="form-container">
+        <h1>Create Your Character</h1>
+        <form action="/start-new-game" method="POST">
+            <div>
+                <label for="playername">Character Name:</label> <!-- Changed label 'for' -->
+                <input type="text" id="playername" name="playername" required pattern="[a-zA-Z0-9_-]+" title="Only letters, numbers, underscores, and hyphens allowed."> <!-- Changed id and name -->
+            </div>
+            <div>
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender">
+                    <option value="female" selected>Female</option>
+                    <option value="male">Male</option>
+                    <!-- Add more options if available in player model -->
+                </select>
+            </div>
+            <div>
+                <label for="hairstyle">Hairstyle:</label>
+                <select id="hairstyle" name="hairstyle">
+                    <option value="hair1" selected>Style 1</option>
+                    <option value="hair2">Style 2</option>
+                    <option value="hair3">Style 3</option>
+                    <!-- Add more options if available -->
+                </select>
+            </div>
+            <div>
+                <button type="submit">Begin Adventure</button>
+            </div>
+        </form>
+        <p><a href="/">Back to Main Menu</a></p>
+    </div>
+</body>
+</html>
