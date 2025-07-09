@@ -9,11 +9,11 @@
 ];%>
 <% creatures.forEach(function(creature) { %>
     <div>
-        <img class="graphic" id="<%= creature.creaturetype %>144" src="/getimage?imageof=<%= creature.creaturetype %>&tilesize=144"></img>
-        <img class="graphic" id="<%= creature.creaturetype %>" src="/getimage?imageof=<%= creature.creaturetype %>&tilesize=36"></img>
+        <img class="graphic" id="<%= creature.creaturetype %>144" src="/api?command=image&modifier=<%= encodeURIComponent(JSON.stringify({imageof: creature.creaturetype, tilesize: 144})) %>"></img>
+        <img class="graphic" id="<%= creature.creaturetype %>" src="/api?command=image&modifier=<%= encodeURIComponent(JSON.stringify({imageof: creature.creaturetype, tilesize: 36})) %>"></img>
         <% if (!nocorpse.includes(creature.creaturetype)) { %>
-            <img class="graphic" id="<%= creature.creaturetype %>corpse144" src="/getimage?imageof=<%= creature.creaturetype %>corpse&tilesize=144"></img>
-            <img class="graphic" id="<%= creature.creaturetype %>corpse" src="/getimage?imageof=<%= creature.creaturetype %>corpse&tilesize=36"></img>
+            <img class="graphic" id="<%= creature.creaturetype %>corpse144" src="/api?command=image&modifier=<%= encodeURIComponent(JSON.stringify({imageof: creature.creaturetype + 'corpse', tilesize: 144})) %>"></img>
+            <img class="graphic" id="<%= creature.creaturetype %>corpse" src="/api?command=image&modifier=<%= encodeURIComponent(JSON.stringify({imageof: creature.creaturetype + 'corpse', tilesize: 36})) %>"></img>
         <% } %>
     </div>
 <% }) %>
@@ -24,8 +24,8 @@
 <% items.forEach(function(item) { %>
     <% if (!miscclasses.includes(item.class)) { %>
         <div>
-            <img class="graphic" id="<%= item.name %>144" src="/getimage?imageof=<%= item.name %>&tilesize=144"></img>
-            <img class="graphic" id="<%= item.name %>" src="/getimage?imageof=<%= item.name %>&tilesize=36"></img>
+            <img class="graphic" id="<%= item.name %>144" src="/api?command=image&modifier=<%= encodeURIComponent(JSON.stringify({imageof: item.name, tilesize: 144})) %>"></img>
+            <img class="graphic" id="<%= item.name %>" src="/api?command=image&modifier=<%= encodeURIComponent(JSON.stringify({imageof: item.name, tilesize: 36})) %>"></img>
         </div>
     <% } %>
 <% }) %>
