@@ -531,16 +531,7 @@ router.post('/', (req, res) => {
       mapRefresh:true
     };
 
-    let terrain = gameState.terrain[gameState.currentFloor];
-    let creatures = gameState.creatures[gameState.currentFloor];
-    let items = gameState.items[gameState.currentFloor];
-    let explored = gameState.explored[gameState.currentFloor];
-    let decals = gameState.decals[gameState.currentFloor];
-
-    const dungeonSpace = new Terrain(boardSize, terrain);
-    dungeon = new Dungeon(dungeonSpace, creatures, items, explored, decals);
-
-    if (dungeon.creatures[0].hp <= 0) {
+    if (gameState.creatures[gameState.currentFloor][0].hp <= 0) {
       ({ gameState, dungeon } = makeLevels(gameState));
     }
   } else {

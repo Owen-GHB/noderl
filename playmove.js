@@ -5,13 +5,7 @@ const { Terrain } = require('./mapclass.js');
 const { Dungeon } = require('./dungeon.js');
 const { saveGame, loadGame } = require('./savefile.js');
 
-router.post('/', (req, res) => {
-  // Retrieve the command and modifier from the request body
-  const givenCommand = req.body.command;
-  let commandModifier = req.body.modifier;
-  commandModifier = commandModifier.replace(/\\/g, ''); // Remove slashes
-  let gameState = {};
-  gameState = loadGame('Player');
+function processCommand(command, modifier, gameState) {
   gameState.globals = {
 	  automove:false,
 	  animations:[],
@@ -25,7 +19,7 @@ router.post('/', (req, res) => {
   let dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
 
   if (dungeon.creatures[0].hp > 0) {
-    dungeon.movePlayer(givenCommand, commandModifier, gameState.globals);
+    dungeon.movePlayer(command, modifier, gameState.globals);
   }
 
   // Update the game state with the modified dungeon
@@ -57,12 +51,32 @@ router.post('/', (req, res) => {
 	  gameState.globals.mapRefresh = true; 
   }
 
+  return {gameState, dungeon};
+}
+
+function processWithSavefile(command, commandModifier, filename) {
+  let gameState = {};
+  let dungeon;
+  gameState = loadGame(filename);
+  ({gameState, dungeon} = processCommand(command, commandModifier, gameState));
+
   // Save game state to file
   try {
-    saveGame('Player', gameState);
+    saveGame(filename, gameState);
   } catch (err) {
     console.error('Error saving game state:', err);
   }
+  
+  return {gameState, dungeon};
+}
+
+router.post('/', (req, res) => {
+  // Retrieve the command and modifier from the request body
+  const givenCommand = req.body.command;
+  let commandModifier = req.body.modifier;
+  commandModifier = commandModifier.replace(/\\/g, ''); // Remove slashes
+  const filename = 'Player'; // Use a fixed filename for simplicity
+  let {gameState, dungeon} = processWithSavefile(givenCommand, commandModifier, filename);
   // Return the response with the necessary data
   let outputs = dungeon.getOutputs(gameState.globals);
   outputs.mapRefresh = gameState.globals.mapRefresh;
