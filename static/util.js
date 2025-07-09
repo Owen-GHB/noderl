@@ -95,7 +95,7 @@ function getnexttarget(creatures,radius) {
 	return target;
 }
 function parsedata(thisdata){
-	//$("#outtakes").html(thisdata);
+	//document.getElementById("outtakes").innerHTML=thisdata;
 	var outputs=JSON.parse(thisdata);
 	//parse terrain/decals output
 	outputs.terrain=outputs.terrain.split("L");

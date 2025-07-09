@@ -497,8 +497,8 @@ router.post('/', (req, res) => {
       mapRefresh:true
     };
 
-    const dungeonSpace = new Terrain(boardSize, gameState.terrain);
-    dungeon = new Dungeon(dungeonSpace, gameState.creatures, gameState.items, gameState.explored, gameState.decals);
+    const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
+    dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor]);
 
     if (dungeon.creatures[0].hp > 0) {
       // No action needed if the player is alive

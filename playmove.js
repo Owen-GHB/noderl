@@ -41,28 +41,20 @@ router.post('/', (req, res) => {
   // Update the modified session variables
   req.session.gameState = gameState;
 
-  if (req.session.gameState.currentFloor === gameState.currentFloor) {
+  if (gameState.globals.currentFloor === gameState.currentFloor) {
     gameState.globals.mapRefresh = false;
   } else {
     const player = dungeon.creatures[0];
     const oldFloor = gameState.currentFloor;
-    gameState.currentFloor = req.session.gameState.currentFloor;
-    gameState.terrain[gameState.currentFloor] = req.session.gameState.terrain[gameState.currentFloor];
-    gameState.decals[gameState.currentFloor] = req.session.gameState.decals[gameState.currentFloor];
-    gameState.creatures[gameState.currentFloor] = req.session.gameState.creatures[gameState.currentFloor];
-    gameState.items[gameState.currentFloor] = req.session.gameState.items[gameState.currentFloor];
-    gameState.explored[gameState.currentFloor] = req.session.gameState.explored[gameState.currentFloor];
-    gameState.visible[gameState.currentFloor] = req.session.gameState.visible[gameState.currentFloor];
-    const dungeonSpace = new Terrain(boardSize, terrain);
+    gameState = req.session.gameState
+    const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
     dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
-	  const position = dungeon.creatures[0].position;
+	const position = dungeon.creatures[0].position;
     dungeon.creatures[0] = JSON.parse(JSON.stringify(player));
     dungeon.creatures[0].position = position;
-
     gameState.creatures[gameState.currentFloor] = dungeon.creatures;
-    req.session.gameState.creatures[gameState.currentFloor] = dungeon.creatures;
-
-    gameState.globals.mapRefresh = true;
+	gameState.globals.mapRefresh = true;
+    req.session.gameState = gameState; 
   }
 
   // Save game state to file using session ID as filename
