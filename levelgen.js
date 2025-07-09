@@ -4,7 +4,7 @@ const router = express.Router();
 const { Terrain, DungeonSpace } = require('./mapclass.js');
 const { Dungeon } = require('./dungeon.js');
 const fs = require('fs');
-const { saveGame, loadGame, extractGameStateFromSession, applyGameStateToSession } = require('./savefile.js');
+const { saveGame, loadGame, savefileExists } = require('./savefile.js');
 
 function buildRandomPath(toFill, sectorSpace) {
   let step = 0;
@@ -488,8 +488,8 @@ router.post('/', (req, res) => {
   let dungeon;
   let gameState = {};
 
-  if ((typeof(req.session.gameState)!="undefined") && req.session.gameState.currentFloor) {
-    gameState = req.session.gameState;
+  if (savefileExists(req.sessionID)) {
+    gameState = loadGame(req.sessionID);
     gameState.globals = {
       automove:false,
       animations:[],

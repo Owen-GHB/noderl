@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { Terrain } = require('./mapclass.js');
 const { Dungeon } = require('./dungeon.js');
-const { saveGame, loadGame, extractGameStateFromSession, applyGameStateToSession } = require('./savefile.js');
+const { saveGame, loadGame } = require('./savefile.js');
 
 router.post('/', (req, res) => {
   // Retrieve the command and modifier from the request body
@@ -11,8 +11,7 @@ router.post('/', (req, res) => {
   let commandModifier = req.body.modifier;
   commandModifier = commandModifier.replace(/\\/g, ''); // Remove slashes
   let gameState = {};
-  // Retrieve the necessary session variables
-  gameState = req.session.gameState;
+  gameState = loadGame(req.sessionID);
   gameState.globals = {
 	  automove:false,
 	  animations:[],
@@ -38,9 +37,7 @@ router.post('/', (req, res) => {
   gameState.visible[gameState.currentFloor] = dungeon.visible;
   gameState.currentFloor = dungeon.currentFloor;
 
-  // Update the modified session variables
-  req.session.gameState = gameState;
-
+  // Check if the current floor has changed
   if (gameState.globals.currentFloor === gameState.currentFloor) {
     gameState.globals.mapRefresh = false;
   } else {
@@ -53,8 +50,7 @@ router.post('/', (req, res) => {
     dungeon.creatures[0] = JSON.parse(JSON.stringify(player));
     dungeon.creatures[0].position = position;
     gameState.creatures[gameState.currentFloor] = dungeon.creatures;
-	gameState.globals.mapRefresh = true;
-    req.session.gameState = gameState; 
+	  gameState.globals.mapRefresh = true; 
   }
 
   // Save game state to file using session ID as filename

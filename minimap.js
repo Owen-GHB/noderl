@@ -3,11 +3,11 @@ const express = require('express');
 const router = express.Router();
 const { Terrain } = require('./mapclass.js');
 const { Dungeon } = require('./dungeon.js');
-const { saveGame, loadGame, extractGameStateFromSession, applyGameStateToSession } = require('./savefile.js');
+const { saveGame, loadGame } = require('./savefile.js');
 
 router.post('/', (req, res) => {
   // Retrieve the necessary session variables
-  let gameState = req.session.gameState;
+  let gameState = loadGame(req.sessionID);
 
   const boardSize = { x: 60, y: 60 };
   const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);

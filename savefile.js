@@ -100,9 +100,6 @@ function loadGame(saveFileName) {
       }
     }
     
-    console.log(`Game loaded successfully from: ${saveFilePath}`);
-    console.log(`Save timestamp: ${saveData.timestamp}`);
-    
     return gameState;
   } catch (error) {
     console.error('Error loading game:', error);
@@ -179,48 +176,6 @@ function deleteSaveFile(saveFileName) {
 }
 
 /**
- * Extract game state from Express session for saving
- * @param {Object} session - Express session object
- * @returns {Object} Game state object ready for saving
- */
-function extractGameStateFromSession(session) {
-  return {
-    currentFloor: session.currentFloor,
-    terrain: session.terrain,
-    decals: session.decals,
-    creatures: session.creatures,
-    items: session.items,
-    explored: session.explored,
-    visible: session.visible
-  };
-}
-
-/**
- * Apply loaded game state to Express session
- * @param {Object} session - Express session object
- * @param {Object} gameState - Loaded game state
- */
-function applyGameStateToSession(session, gameState) {
-  session.currentFloor = gameState.currentFloor;
-  session.terrain = gameState.terrain;
-  session.decals = gameState.decals;
-  session.creatures = gameState.creatures;
-  session.items = gameState.items;
-  session.explored = gameState.explored;
-  session.visible = gameState.visible;
-}
-
-module.exports = {
-  saveGame,
-  loadGame,
-  listSaveFiles,
-  deleteSaveFile,
-  extractGameStateFromSession,
-  applyGameStateToSession,
-  savefileExists
-};
-
-/**
  * Check if a save file exists
  * @param {string} saveFileName - Name of the save file (without extension)
  * @returns {boolean} True if the file exists, false otherwise
@@ -229,3 +184,11 @@ function savefileExists(saveFileName) {
   const saveFilePath = path.join(SAVE_DIR, `${saveFileName}.json`);
   return fs.existsSync(saveFilePath);
 }
+
+module.exports = {
+  saveGame,
+  loadGame,
+  listSaveFiles,
+  deleteSaveFile,
+  savefileExists
+};
