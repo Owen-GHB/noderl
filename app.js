@@ -22,25 +22,6 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Middleware to load game state from file if it exists
-app.use(async (req, res, next) => {
-  // Only try to load if session doesn't already have game state
-  if (req.session && !req.session.currentFloor && req.sessionID) {
-    try {
-      const gameState = await loadGame(req.sessionID);
-      applyGameStateToSession(req.session, gameState);
-      console.log(`Loaded game state for session: ${req.sessionID}`);
-    } catch (error) {
-      // If no save file exists or loading fails, continue without loading
-      // This is normal for new sessions
-      if (!error.message.includes('Save file not found')) {
-        console.warn(`Failed to load game state for session ${req.sessionID}:`, error.message);
-      }
-    }
-  }
-  next();
-});
-
 // Parse JSON bodies
 app.use(bodyParser.json());
 
