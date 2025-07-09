@@ -82,21 +82,28 @@ function updategame(output,mapsize,radius,opentab){
 		for (item=0;item<14;item++){
 			if (typeof output.stats.inventory[item]!='undefined'){
 				var itemtype=output.stats.inventory[item].type;
-				document.querySelector("#inventory [value='"+item+"']").src = "getimage?imageof="+itemtype+"&tilesize=32";
+				// document.querySelector("#inventory [value='"+item+"']").src = "getimage?imageof="+itemtype+"&tilesize=32"; // Removed
 				newimg = document.getElementById(itemtype);
-				ctx.drawImage(newimg,136+(item%7)*36,378+Math.floor(item/7)*50,36,36);
+				if (newimg) { // Guard against missing preloaded image
+					ctx.drawImage(newimg,136+(item%7)*36,378+Math.floor(item/7)*50,36,36);
+				}
 			} else {
-				document.querySelector("#inventory [value='"+item+"']").src = "getimage?imageof=none&tilesize=32";
+				// document.querySelector("#inventory [value='"+item+"']").src = "getimage?imageof=none&tilesize=32"; // Removed
+				// Optionally draw a blank space if item is not defined:
+				// newimg = document.getElementById("none"); // Assuming "none" is a preloaded blank image
+				// if (newimg) ctx.drawImage(newimg, ...);
 			}
 		}
 		for (item=0;item<7;item++){
 			if (output.stats.equipment[item]){
 				var itemtype=output.stats.equipment[item].type;
-				document.querySelector("#equipment [value='"+item+"']").src = "getimage?imageof="+itemtype+"&tilesize=36";
+				// document.querySelector("#equipment [value='"+item+"']").src = "getimage?imageof="+itemtype+"&tilesize=36"; // Removed
 				newimg = document.getElementById(itemtype);
-				ctx.drawImage(newimg,136+item*36,326,36,36);
+				if (newimg) { // Guard against missing preloaded image
+					ctx.drawImage(newimg,136+item*36,326,36,36);
+				}
 			} else {
-				document.querySelector("#equipment [value='"+item+"']").src = "getimage?imageof=none&tilesize=36";
+				// document.querySelector("#equipment [value='"+item+"']").src = "getimage?imageof=none&tilesize=36"; // Removed
 			}
 		}
 		if (typeof output.stats.onground!='undefined') for (item=0;item<7;item++){
@@ -107,21 +114,27 @@ function updategame(output,mapsize,radius,opentab){
 				} else if (itemtype=="weapon"||itemtype=="armour"||itemtype=="shield"||itemtype=="helmet") {
 					itemtype=output.stats.onground[item].name;
 				}
-				document.querySelector("#ground [value='"+item+"']").src = "getimage?imageof="+itemtype+"&tilesize=32";
+				// document.querySelector("#ground [value='"+item+"']").src = "getimage?imageof="+itemtype+"&tilesize=32"; // Removed
 				newimg = document.getElementById(itemtype);
-				ctx.drawImage(newimg,136+item*36,472,36,36);
+				if (newimg) { // Guard against missing preloaded image
+					ctx.drawImage(newimg,136+item*36,472,36,36);
+				}
 			} else {
-				document.querySelector("#ground [value='"+item+"']").src = "getimage?imageof=none&tilesize=32";
+				// document.querySelector("#ground [value='"+item+"']").src = "getimage?imageof=none&tilesize=32"; // Removed
 			}
 		}
 	}
 	
+	// This loop for spells seems to be outside the opentab=="items" check.
+	// It's possible these were intended for a different UI area or are also legacy.
+	// For now, removing them as they target non-existent DOM elements.
+	// If spell display is missing, this area might need a canvas drawing implementation.
 	for (spell=0;spell<7;spell++){
 		if (typeof output.stats.repetoire[spell]!='undefined'){
 			var spelltype=output.stats.repetoire[spell].school;
-			document.querySelector("#spells [value='"+spell+"']").src = "getimage?imageof="+spelltype+"&tilesize=32";
+			// document.querySelector("#spells [value='"+spell+"']").src = "getimage?imageof="+spelltype+"&tilesize=32"; // Removed
 		} else {
-			document.querySelector("#spells [value='"+spell+"']").src = "getimage?imageof=none&tilesize=32";
+			// document.querySelector("#spells [value='"+spell+"']").src = "getimage?imageof=none&tilesize=32"; // Removed
 		}
 	}
 	
