@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					move={command:"moveto",modifier:JSON.stringify("explore")};
 					break;
 				case 70:
+					if (!lastoutputs || !lastoutputs.creatures) return; // Guard clause
 					var target=getnexttarget(lastoutputs.creatures,radius);
 					if (target!=false) {
 						move={command:"moveto",modifier:JSON.stringify(target)};
@@ -98,6 +99,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				case 71:
 						move={command:"pickup",modifier:0};
 				case 67:
+					if (!lastoutputs || !lastoutputs.creatures) return; // Guard clause
 					var target=getnexttarget(lastoutputs.creatures,radius);
 					if (target!=false) {
 						input={"spell":casting,"x":target.x,"y":target.y};
@@ -126,6 +128,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	});
 	document.getElementById("map").addEventListener('click', function(event){
 		event.preventDefault();
+		if (!lastoutputs || !lastoutputs.stats || !lastoutputs.stats.position) return; // Guard clause
 		var mousex=event.clientX-this.offsetLeft;
 		var mousey=event.clientY-this.offsetTop;
 		inputx=(mousex-(mousex%tilesize))/tilesize;
@@ -159,6 +162,9 @@ document.addEventListener('DOMContentLoaded', function(){
 		}
 	});
 	document.getElementById("map").addEventListener('mousemove', function(event){
+		if (!lastoutputs || !lastoutputs.terrain || !lastoutputs.decals || !lastoutputs.items || !lastoutputs.creatures) {
+            return; // Guard clause if lastoutputs or its properties aren't ready
+        }
 		var mousex=event.clientX-this.offsetLeft;
 		var mousey=event.clientY-this.offsetTop;
 		var focus=getsquarecontents(
