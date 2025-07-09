@@ -1,7 +1,7 @@
 var waiting=false;
 var showanimations=true;
 var interrupt=false;
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function(){
 	var mapsize=612;
 	var radius=8;
 	var tilesize=Math.floor(mapsize/(2*radius+1));
@@ -11,6 +11,22 @@ $(document).ready(function(){
 	var newtiles=false;
 	var casting=false;
 	var opentab="items";
+
+	async function postData(url = '', data = {}) {
+	    const response = await fetch(url, {
+	        method: 'POST',
+	        headers: {
+	            'Content-Type': 'application/x-www-form-urlencoded',
+	        },
+	        body: new URLSearchParams(data).toString()
+	    });
+	    if (!response.ok) {
+	        console.error(`HTTP error! status: ${response.status}`);
+	        return null;
+	    }
+	    return response.text();
+	}
+
 	function refreshgame(outputs,lastoutput,lastinput){
 		//main update sequence called from animate
 		var ctx = document.getElementById("map").getContext("2d");
@@ -19,14 +35,15 @@ $(document).ready(function(){
 			ctx.font = "12px";
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
-			$.post("playmove",lastinput,function(data,status){
+			postData("playmove",lastinput).then(data => {
+				if (data === null) return; // Error handled in postData
 				var output=parsedata(data);
 				lastoutputs=refreshgame(output,outputs,lastinput);
-			});
+			}).catch(error => console.error('Fetch error:', error));
 		}
 		return outputs;
 	}
-	$(this).keydown(function(e){
+	document.addEventListener('keydown',function(e){
 		e.preventDefault();
 		if (!waiting){
 			var keycode = e.which;        
@@ -70,6 +87,7 @@ $(document).ready(function(){
 					move={command:"moveto",modifier:JSON.stringify("explore")};
 					break;
 				case 70:
+					if (!lastoutputs || !lastoutputs.creatures) return; // Guard clause
 					var target=getnexttarget(lastoutputs.creatures,radius);
 					if (target!=false) {
 						move={command:"moveto",modifier:JSON.stringify(target)};
@@ -81,6 +99,7 @@ $(document).ready(function(){
 				case 71:
 						move={command:"pickup",modifier:0};
 				case 67:
+					if (!lastoutputs || !lastoutputs.creatures) return; // Guard clause
 					var target=getnexttarget(lastoutputs.creatures,radius);
 					if (target!=false) {
 						input={"spell":casting,"x":target.x,"y":target.y};
@@ -99,15 +118,17 @@ $(document).ready(function(){
 				ctx.font = "12px";
 				ctx.fillStyle = "#C0C0C0";
 				ctx.fillText("Waiting for server",0,10);
-				$.post("playmove",move,function(data,status){
+				postData("playmove",move).then(data => {
+					if (data === null) return;
 					var output=parsedata(data);
 					lastoutputs=refreshgame(output,lastoutputs,move);
-				});
+				}).catch(error => console.error('Fetch error:', error));
 			}
 		}
 	});
-	$("#map").click(function(event){
+	document.getElementById("map").addEventListener('click', function(event){
 		event.preventDefault();
+		if (!lastoutputs || !lastoutputs.stats || !lastoutputs.stats.position) return; // Guard clause
 		var mousex=event.clientX-this.offsetLeft;
 		var mousey=event.clientY-this.offsetTop;
 		inputx=(mousex-(mousex%tilesize))/tilesize;
@@ -126,19 +147,24 @@ $(document).ready(function(){
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
 			if (event.shiftKey){
-				$.post("playmove",{command:"cast",modifier:JSON.stringify(input)},function(data,status){
+				postData("playmove",{command:"cast",modifier:JSON.stringify(input)}).then(data => {
+					if (data === null) return;
 					var outputs=parsedata(data);
 					lastoutputs=refreshgame(outputs,lastoutputs);
-				});
+				}).catch(error => console.error('Fetch error:', error));
 			} else {
-				$.post("playmove",{command:"moveto",modifier:JSON.stringify(input)},function(data,status){
+				postData("playmove",{command:"moveto",modifier:JSON.stringify(input)}).then(data => {
+					if (data === null) return;
 					var outputs=parsedata(data);
 					lastoutputs=refreshgame(outputs,lastoutputs,{command:"moveto",modifier:JSON.stringify(input)});
-				});
+				}).catch(error => console.error('Fetch error:', error));
 			}
 		}
 	});
-	$("#map").mousemove(function(event){
+	document.getElementById("map").addEventListener('mousemove', function(event){
+		if (!lastoutputs || !lastoutputs.terrain || !lastoutputs.decals || !lastoutputs.items || !lastoutputs.creatures) {
+            return; // Guard clause if lastoutputs or its properties aren't ready
+        }
 		var mousex=event.clientX-this.offsetLeft;
 		var mousey=event.clientY-this.offsetTop;
 		var focus=getsquarecontents(
@@ -170,24 +196,25 @@ $(document).ready(function(){
 		ctx.font = "24px";
 		ctx.fillText(thingtype,144,208);
 	});
-	$("#newlevel").click(function(){
-		$("#menu").css("display","none");
-		$("#map").css("display","block");
+	document.getElementById("newlevel").addEventListener('click', function(){
+		document.getElementById("menu").style.display = "none";
+		document.getElementById("map").style.display = "block";
 		if (!waiting) {
 			waiting=true;
 			var ctx = document.getElementById("map").getContext("2d");
 			ctx.font = "12px";
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
-			$.post("levelgen",{dud:0},function(data,status){
-				//$("#player").attr("src","getplayerimg?tilesize=108");
+			postData("levelgen",{dud:0}).then(data => {
+				if (data === null) return;
+				//document.getElementById("player").src = "getplayerimg?tilesize=108"; // If we were to uncomment this
 				var outputs=parsedata(data);
 				lastoutputs=refreshgame(outputs,lastoutputs);
-				$("#movelog").html("Player has entered the dungeon</br>");
-			});
+				document.getElementById("movelog").innerHTML = "Player has entered the dungeon</br>";
+			}).catch(error => console.error('Fetch error:', error));
 		}
 	});
-	$("#controls").mousemove(function(event){
+	document.getElementById("controls").addEventListener('mousemove', function(event){
 		event.preventDefault();
 		var mousex=event.clientX-this.offsetLeft;
 		var mousey=event.clientY-this.offsetTop;
@@ -238,9 +265,9 @@ $(document).ready(function(){
 		ctx.font = "24px";
 		ctx.fillText(strrep,144,208);
 	});
-	$("#controls").click(function(event){
+	document.getElementById("controls").addEventListener('click', function(event){
 		event.preventDefault();
-		$("#debug").html("clicked ");
+		document.getElementById("debug").innerHTML = "clicked ";
 		var mousex=event.clientX-this.offsetLeft;
 		var mousey=event.clientY-this.offsetTop;
 		var fback;
@@ -256,10 +283,11 @@ $(document).ready(function(){
 					ctx.fillStyle = "#C0C0C0";
 					ctx.fillText("Waiting for server",0,10);
 					var move = {command:"moveto",modifier:JSON.stringify(input)};
-					$.post("playmove",move,function(data,status){						
+					postData("playmove",move).then(data => {
+						if (data === null) return;
 						var outputs=parsedata(data);
 						lastoutputs=refreshgame(outputs,lastoutputs,move);
-					});
+					}).catch(error => console.error('Fetch error:', error));
 				}
 				fback="minimap";
 			} else {
@@ -278,10 +306,11 @@ $(document).ready(function(){
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
 							var move = {command:"moveto",modifier:JSON.stringify(input)};
-							$.post("playmove",move,function(data,status){
+							postData("playmove",move).then(data => {
+								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs,move);
-							});
+							}).catch(error => console.error('Fetch error:', error));
 						}
 					} else if (mousex<284){
 						fback="fight";
@@ -293,11 +322,11 @@ $(document).ready(function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							$.post("playmove",{command:"moveto",modifier:JSON.stringify(input)},function(data,status){
-								
+							postData("playmove",{command:"moveto",modifier:JSON.stringify(input)}).then(data => {
+								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
-							});
+							}).catch(error => console.error('Fetch error:', error));
 						} else {
 							lastoutputs.movelog=["No creature in view"];
 							updategame(lastoutputs,mapsize,radius,opentab);
@@ -311,11 +340,11 @@ $(document).ready(function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							$.post("playmove",{command:input,modifier:100},function(data,status){
-								
+							postData("playmove",{command:input,modifier:100}).then(data => {
+								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
-							});
+							}).catch(error => console.error('Fetch error:', error));
 						}
 					} else {
 						fback="cast";
@@ -327,11 +356,11 @@ $(document).ready(function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							$.post("playmove",{command:"cast",modifier:JSON.stringify(input)},function(data,status){
-								
+							postData("playmove",{command:"cast",modifier:JSON.stringify(input)}).then(data => {
+								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
-							});
+							}).catch(error => console.error('Fetch error:', error));
 						} else {
 							lastoutputs.movelog=[];
 							updategame(lastoutputs,mapsize,radius);
@@ -393,10 +422,11 @@ $(document).ready(function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							$.post("playmove",{command:input,modifier:itemchoice},function(data,status){
+							postData("playmove",{command:input,modifier:itemchoice}).then(data => {
+								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
-							});	
+							}).catch(error => console.error('Fetch error:', error));
 						}
 					}
 				} else if (opentab=="options"){
@@ -408,21 +438,21 @@ $(document).ready(function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							$.post("playmove",{command:input,modifier:false},function(data,status){
-								
+							postData("playmove",{command:input,modifier:false}).then(data => {
+								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
-							});
+							}).catch(error => console.error('Fetch error:', error));
 						}
 					}
 				};
 			}
 		}
-		$("#debug").html(fback);
+		document.getElementById("debug").innerHTML = fback;
 	});
 	
 	//actual code to be executed upon page loading
-	$("#loadingscreen").css("display","none");
-	$("#menu").css("display","block");
+	document.getElementById("loadingscreen").style.display = "none";
+	document.getElementById("menu").style.display = "block";
 	drawUIskin(opentab);
 });

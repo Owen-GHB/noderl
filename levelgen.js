@@ -546,15 +546,15 @@ router.post('/', (req, res) => {
   saveGame(req.sessionID, gameState)
     .then(() => {
       let outputs = dungeon.getOutputs(globals);
-      outputs.maprefresh = globals.mapRefresh;
-      res.json(JSON.stringify(outputs));
+      outputs.mapRefresh = globals.mapRefresh;
+      res.json(outputs);
     })
     .catch((err) => {
       console.error('Error saving game state:', err);
       // Still return response even if save fails
       let outputs = dungeon.getOutputs(globals);
-      outputs.maprefresh = globals.mapRefresh;
-      res.json(JSON.stringify(outputs));
+      outputs.mapRefresh = globals.mapRefresh;
+      res.json(outputs);
     });
 });
 

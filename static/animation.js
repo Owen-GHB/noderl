@@ -1,3 +1,18 @@
+async function postData(url = '', data = {}) {
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(data).toString()
+    });
+    if (!response.ok) {
+        console.error(`HTTP error! status: ${response.status}`);
+        return null;
+    }
+    return response.text();
+}
+
 function updategame(output,mapsize,radius,opentab){
 	var offset = {x:0, y:0};
 	var tilesize=Math.floor(mapsize/(2*radius+1));
@@ -7,7 +22,8 @@ function updategame(output,mapsize,radius,opentab){
 	drawviscreatures(output.creatures,output.stats.position,offset,mapsize,radius);
 	drawplayer(radius*tilesize,radius*tilesize,output.stats.equipment,mapsize,radius);
 	if (output.mapRefresh) {
-		$.post("minimap",{dud:0},function(data,status){
+		postData("minimap",{dud:0}).then(data => {
+			if (data === null) return;
 			var mapctx = document.getElementById("controls").getContext("2d");
 			mapctx.fillStyle = "#000000";
 			mapctx.fillRect(0,0,180,180);
@@ -30,7 +46,7 @@ function updategame(output,mapsize,radius,opentab){
 					}
 				}
 			}
-		});
+		}).catch(error => console.error('Fetch error:', error));
 	}
 	var ctx = document.getElementById("controls").getContext("2d");
 	ctx.fillStyle = "#000000";
@@ -66,21 +82,25 @@ function updategame(output,mapsize,radius,opentab){
 		for (item=0;item<14;item++){
 			if (typeof output.stats.inventory[item]!='undefined'){
 				var itemtype=output.stats.inventory[item].type;
-				$("#inventory [value="+item+"]").attr("src","getimage?imageof="+itemtype+"&tilesize=32");
 				newimg = document.getElementById(itemtype);
-				ctx.drawImage(newimg,136+(item%7)*36,378+Math.floor(item/7)*50,36,36);
+				if (newimg) { // Guard against missing preloaded image
+					ctx.drawImage(newimg,136+(item%7)*36,378+Math.floor(item/7)*50,36,36);
+				}
 			} else {
-				$("#inventory [value="+item+"]").attr("src","getimage?imageof=none&tilesize=32");
+				// Optionally draw a blank space if item is not defined:
+				// newimg = document.getElementById("none"); // Assuming "none" is a preloaded blank image
+				// if (newimg) ctx.drawImage(newimg, ...);
 			}
 		}
 		for (item=0;item<7;item++){
 			if (output.stats.equipment[item]){
 				var itemtype=output.stats.equipment[item].type;
-				$("#equipment [value="+item+"]").attr("src","getimage?imageof="+itemtype+"&tilesize=36");
 				newimg = document.getElementById(itemtype);
-				ctx.drawImage(newimg,136+item*36,326,36,36);
+				if (newimg) { // Guard against missing preloaded image
+					ctx.drawImage(newimg,136+item*36,326,36,36);
+				}
 			} else {
-				$("#equipment [value="+item+"]").attr("src","getimage?imageof=none&tilesize=36");
+				// No action needed for empty equipment slot in terms of .src manipulation
 			}
 		}
 		if (typeof output.stats.onground!='undefined') for (item=0;item<7;item++){
@@ -91,27 +111,32 @@ function updategame(output,mapsize,radius,opentab){
 				} else if (itemtype=="weapon"||itemtype=="armour"||itemtype=="shield"||itemtype=="helmet") {
 					itemtype=output.stats.onground[item].name;
 				}
-				$("#ground [value="+item+"]").attr("src","getimage?imageof="+itemtype+"&tilesize=32");
 				newimg = document.getElementById(itemtype);
-				ctx.drawImage(newimg,136+item*36,472,36,36);
+				if (newimg) { // Guard against missing preloaded image
+					ctx.drawImage(newimg,136+item*36,472,36,36);
+				}
 			} else {
-				$("#ground [value="+item+"]").attr("src","getimage?imageof=none&tilesize=32");
+				// No action needed for empty ground slot in terms of .src manipulation
 			}
 		}
 	}
 	
+	// This loop for spells seems to be outside the opentab=="items" check.
+	// It's possible these were intended for a different UI area or are also legacy.
+	// For now, removing them as they target non-existent DOM elements.
+	// If spell display is missing, this area might need a canvas drawing implementation.
 	for (spell=0;spell<7;spell++){
 		if (typeof output.stats.repetoire[spell]!='undefined'){
 			var spelltype=output.stats.repetoire[spell].school;
-			$("#spells [value="+spell+"]").attr("src","getimage?imageof="+spelltype+"&tilesize=32");
+			// Ensure no .src manipulation here
 		} else {
-			$("#spells [value="+spell+"]").attr("src","getimage?imageof=none&tilesize=32");
+			// Ensure no .src manipulation here
 		}
 	}
 	
 	for (move in output.movelog){
-		$("#movelog").prepend(output.movelog[move]+"<br/>");
-		$("#movelog").scrollTop(0);
+		document.getElementById("movelog").insertAdjacentHTML("afterbegin", output.movelog[move]+"<br/>");
+		document.getElementById("movelog").scrollTop = 0;
 	}
 	return output;
 }
@@ -471,8 +496,8 @@ function animationcycle(output,lastoutput,ctx,mapsize,radius,opentab){
 			},80);
 		} else {
 			timer=0;
-			$("#menu").css("display","block");
-			$("#map").css("display","none");
+			document.getElementById("menu").style.display = "block";
+			document.getElementById("map").style.display = "none";
 		}
 		return output;
 	}
