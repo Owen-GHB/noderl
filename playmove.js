@@ -70,17 +70,6 @@ function processWithSavefile(command, commandModifier, filename) {
   return {gameState, dungeon};
 }
 
-router.post('/', (req, res) => {
-  // Retrieve the command and modifier from the request body
-  const givenCommand = req.body.command;
-  let commandModifier = req.body.modifier;
-  commandModifier = commandModifier.replace(/\\/g, ''); // Remove slashes
-  const filename = 'Player'; // Use a fixed filename for simplicity
-  let {gameState, dungeon} = processWithSavefile(givenCommand, commandModifier, filename);
-  // Return the response with the necessary data
-  let outputs = dungeon.getOutputs(gameState.globals);
-  outputs.mapRefresh = gameState.globals.mapRefresh;
-  res.json(outputs);
-});
-
-module.exports = router;
+module.exports = {
+  processWithSavefile
+};

@@ -3,10 +3,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
-const playMoveRouter = require('./playmove');
-const levelGenRouter = require('./levelgen');
-const getImageRouter = require('./getimage');
-const minimapRouter = require('./minimap');
+const apiRouter = require('./http-api');
 const creatures = require('./creatures.json');
 const items = require('./items.json');
 const { loadGame, applyGameStateToSession } = require('./savefile.js');
@@ -28,17 +25,8 @@ app.use(bodyParser.json());
 // Parse URL-encoded bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Use the playmove router for the /playmove API endpoint
-app.use('/playmove', playMoveRouter);
-
-// Use the levelgen router for the /levelgen API endpoint
-app.use('/levelgen', levelGenRouter);
-
-// Use the getimage router for the /getimage API endpoint
-app.use('/getimage', getImageRouter);
-
-// Use the minimap router for the /minimap API endpoint
-app.use('/minimap', minimapRouter);
+// Use the API router for all API endpoints
+app.use('/', apiRouter);
 
 // Serve static files from the /static directory
 app.use('/', express.static(__dirname + '/static'));
