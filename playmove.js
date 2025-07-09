@@ -58,20 +58,15 @@ router.post('/', (req, res) => {
   }
 
   // Save game state to file using session ID as filename
-  saveGame(req.sessionID, gameState)
-    .then(() => {
-      // Return the response with the necessary data
-      let outputs = dungeon.getOutputs(gameState.globals);
-      outputs.mapRefresh = gameState.globals.mapRefresh;
-      res.json(outputs);
-    })
-    .catch((err) => {
-      console.error('Error saving game state:', err);
-      // Still return response even if save fails
-      let outputs = dungeon.getOutputs(gameState.globals);
-      outputs.mapRefresh = gameState.globals.mapRefresh;
-      res.json(outputs);
-    });
+  try {
+    saveGame(req.sessionID, gameState);
+  } catch (err) {
+    console.error('Error saving game state:', err);
+  }
+  // Return the response with the necessary data
+  let outputs = dungeon.getOutputs(gameState.globals);
+  outputs.mapRefresh = gameState.globals.mapRefresh;
+  res.json(outputs);
 });
 
 module.exports = router;

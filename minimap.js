@@ -14,16 +14,13 @@ router.post('/', (req, res) => {
   let dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
 
   // Save game state to file using session ID as filename
-  saveGame(req.sessionID, gameState)
-    .then(() => {
-      // Return the response with the necessary data
-      res.json(dungeon.getMinimap());
-    })
-    .catch((err) => {
-      console.error('Error saving game state:', err);
-      // Still return response even if save fails
-      res.json(dungeon.getMinimap());
-    });
+  try {
+    saveGame(req.sessionID, gameState);
+  } catch (err) {
+    console.error('Error saving game state:', err);
+  }
+  // Return the response with the necessary data
+  res.json(dungeon.getMinimap());
 });
 
 module.exports = router;

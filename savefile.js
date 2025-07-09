@@ -1,15 +1,15 @@
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 
 // Ensure save directory exists
 const SAVE_DIR = path.join(__dirname, 'save');
 
-async function ensureSaveDirectory() {
+function ensureSaveDirectory() {
   try {
-    await fs.access(SAVE_DIR);
+    fs.accessSync(SAVE_DIR);
   } catch (error) {
     if (error.code === 'ENOENT') {
-      await fs.mkdir(SAVE_DIR, { recursive: true });
+      fs.mkdirSync(SAVE_DIR, { recursive: true });
     } else {
       throw error;
     }
@@ -27,11 +27,10 @@ async function ensureSaveDirectory() {
  * @param {Object} gameState.items - Items data indexed by floor
  * @param {Object} gameState.explored - Explored areas indexed by floor
  * @param {Object} gameState.visible - Visible areas indexed by floor
- * @returns {Promise<void>}
  */
-async function saveGame(saveFileName, gameState) {
+function saveGame(saveFileName, gameState) {
   try {
-    await ensureSaveDirectory();
+    ensureSaveDirectory();
     
     // Validate required properties
     const requiredProperties = ['currentFloor', 'terrain', 'decals', 'creatures', 'items', 'explored', 'visible'];
@@ -57,7 +56,7 @@ async function saveGame(saveFileName, gameState) {
     };
     
     const saveFilePath = path.join(SAVE_DIR, `${saveFileName}.json`);
-    await fs.writeFile(saveFilePath, JSON.stringify(saveData, null, 2), 'utf8');
+    fs.writeFileSync(saveFilePath, JSON.stringify(saveData, null, 2), 'utf8');
     
   } catch (error) {
     console.error('Error saving game:', error);
@@ -68,15 +67,15 @@ async function saveGame(saveFileName, gameState) {
 /**
  * Load game state from a file
  * @param {string} saveFileName - Name of the save file (without extension)
- * @returns {Promise<Object>} Game state object matching session structure
+ * @returns {Object} Game state object matching session structure
  */
-async function loadGame(saveFileName) {
+function loadGame(saveFileName) {
   try {
     const saveFilePath = path.join(SAVE_DIR, `${saveFileName}.json`);
     
     // Check if file exists
     try {
-      await fs.access(saveFilePath);
+      fs.accessSync(saveFilePath);
     } catch (error) {
       if (error.code === 'ENOENT') {
         throw new Error(`Save file not found: ${saveFileName}.json`);
@@ -84,7 +83,7 @@ async function loadGame(saveFileName) {
       throw error;
     }
     
-    const saveDataRaw = await fs.readFile(saveFilePath, 'utf8');
+    const saveDataRaw = fs.readFileSync(saveFilePath, 'utf8');
     const saveData = JSON.parse(saveDataRaw);
     
     // Validate save data structure
@@ -113,13 +112,13 @@ async function loadGame(saveFileName) {
 
 /**
  * List all available save files
- * @returns {Promise<Array<Object>>} Array of save file info objects
+ * @returns {Array<Object>} Array of save file info objects
  */
-async function listSaveFiles() {
+function listSaveFiles() {
   try {
-    await ensureSaveDirectory();
+    ensureSaveDirectory();
     
-    const files = await fs.readdir(SAVE_DIR);
+    const files = fs.readdirSync(SAVE_DIR);
     const saveFiles = files.filter(file => file.endsWith('.json'));
     
     const saveFileInfo = [];
@@ -127,8 +126,8 @@ async function listSaveFiles() {
     for (const file of saveFiles) {
       try {
         const filePath = path.join(SAVE_DIR, file);
-        const stats = await fs.stat(filePath);
-        const saveDataRaw = await fs.readFile(filePath, 'utf8');
+        const stats = fs.statSync(filePath);
+        const saveDataRaw = fs.readFileSync(filePath, 'utf8');
         const saveData = JSON.parse(saveDataRaw);
         
         saveFileInfo.push({
@@ -158,15 +157,14 @@ async function listSaveFiles() {
 /**
  * Delete a save file
  * @param {string} saveFileName - Name of the save file (without extension)
- * @returns {Promise<void>}
  */
-async function deleteSaveFile(saveFileName) {
+function deleteSaveFile(saveFileName) {
   try {
     const saveFilePath = path.join(SAVE_DIR, `${saveFileName}.json`);
     
     // Check if file exists
     try {
-      await fs.access(saveFilePath);
+      fs.accessSync(saveFilePath);
     } catch (error) {
       if (error.code === 'ENOENT') {
         throw new Error(`Save file not found: ${saveFileName}.json`);
@@ -174,7 +172,7 @@ async function deleteSaveFile(saveFileName) {
       throw error;
     }
     
-    await fs.unlink(saveFilePath);
+    fs.unlinkSync(saveFilePath);
   } catch (error) {
     throw error;
   }
@@ -218,5 +216,16 @@ module.exports = {
   listSaveFiles,
   deleteSaveFile,
   extractGameStateFromSession,
-  applyGameStateToSession
+  applyGameStateToSession,
+  savefileExists
 };
+
+/**
+ * Check if a save file exists
+ * @param {string} saveFileName - Name of the save file (without extension)
+ * @returns {boolean} True if the file exists, false otherwise
+ */
+function savefileExists(saveFileName) {
+  const saveFilePath = path.join(SAVE_DIR, `${saveFileName}.json`);
+  return fs.existsSync(saveFilePath);
+}
