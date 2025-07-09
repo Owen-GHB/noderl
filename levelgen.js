@@ -519,23 +519,20 @@ function makeLevels(gameState) {
 
 router.post('/', (req, res) => {
   const boardSize = { x: 60, y: 60 };
+  const filename = 'Player';
   let dungeon;
   let gameState = {};
 
-  if (savefileExists('Player')) {
-    gameState = loadGame('Player');
+  if (savefileExists(filename)) {
+    gameState = loadGame(filename);
     gameState.globals = {
       automove:false,
       animations:[],
       eventLog:[],
       mapRefresh:true
     };
-
     if (gameState.creatures[gameState.currentFloor][0].hp <= 0) {
       ({ gameState, dungeon } = makeLevels(gameState));
-    } else {
-      const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
-      dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
     }
   } else {
     gameState = initGameState();
@@ -544,9 +541,13 @@ router.post('/', (req, res) => {
   
   // Save game state to file using session ID as filename
   try {
-    saveGame('Player', gameState);
+    saveGame(filename, gameState);
   } catch (err) {
     console.error('Error saving game state:', err);
+  }
+  if (typeof(dungeon) === 'undefined') {
+      const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
+      dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
   }
   let outputs = dungeon.getOutputs(gameState.globals);
   outputs.mapRefresh = gameState.globals.mapRefresh;
