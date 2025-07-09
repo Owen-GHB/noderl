@@ -486,23 +486,19 @@ function makeLevel(dungeon, floor) {
 router.post('/', (req, res) => {
   const boardSize = { x: 60, y: 60 };
   let dungeon;
-  let globals = {
-	  automove:false,
-	  animations:[],
-	  eventLog:[],
-	  mapRefresh:true
-  };
+  let gameState = {};
 
-  if (req.session.currentFloor) {
-    const floor = req.session.currentFloor;
-    const terrain = req.session.terrain[floor];
-    const decals = req.session.decals[floor];
-    const creatures = req.session.creatures[floor];
-    const items = req.session.items[floor];
-    const explored = req.session.explored[floor];
+  if ((typeof(req.session.gameState)!="undefined") && req.session.gameState.currentFloor) {
+    gameState = req.session.gameState;
+    gameState.globals = {
+      automove:false,
+      animations:[],
+      eventLog:[],
+      mapRefresh:true
+    };
 
-    const dungeonSpace = new Terrain(boardSize, terrain);
-    dungeon = new Dungeon(dungeonSpace, creatures, items, explored, decals);
+    const dungeonSpace = new Terrain(boardSize, gameState.terrain);
+    dungeon = new Dungeon(dungeonSpace, gameState.creatures, gameState.items, gameState.explored, gameState.decals);
 
     if (dungeon.creatures[0].hp > 0) {
       // No action needed if the player is alive
@@ -512,50 +508,57 @@ router.post('/', (req, res) => {
         dungeon = new Dungeon();
         dungeon = makeLevel(dungeon, floor);
 
-        req.session.terrain[floor] = dungeon.terrain;
-        req.session.decals[floor] = dungeon.decals;
-        req.session.creatures[floor] = dungeon.creatures;
-        req.session.items[floor] = dungeon.items;
-        req.session.explored[floor] = dungeon.explored;
-        req.session.visible[floor] = dungeon.visible;
+        gameState.terrain[floor] = dungeon.terrain;
+        gameState.decals[floor] = dungeon.decals;
+        gameState.creatures[floor] = dungeon.creatures;
+        gameState.items[floor] = dungeon.items;
+        gameState.explored[floor] = dungeon.explored;
+        gameState.visible[floor] = dungeon.visible;
       }
-      req.session.currentFloor = 1;
+      gameState.currentFloor = 1;
+      req.session.gameState = gameState;
     }
   } else {
-	req.session.terrain = [];
-	req.session.decals = [];
-	req.session.creatures = [];
-	req.session.items = [];
-	req.session.explored = [];
-	req.session.visible = [];
+    gameState.globals = {
+      automove:false,
+      animations:[],
+      eventLog:[],
+      mapRefresh:true
+    };
+	gameState.terrain = [];
+	gameState.decals = [];
+	gameState.creatures = [];
+	gameState.items = [];
+	gameState.explored = [];
+	gameState.visible = [];
     // again note the decrementing floor index
     for (let floor = 9; floor > 0; floor--) {
       dungeon = new Dungeon();
       dungeon = makeLevel(dungeon, floor);
 
-      req.session.terrain[floor] = dungeon.terrain;
-      req.session.decals[floor] = dungeon.decals;
-      req.session.creatures[floor] = dungeon.creatures;
-      req.session.items[floor] = dungeon.items;
-      req.session.explored[floor] = dungeon.explored;
-      req.session.visible[floor] = dungeon.visible;
+      gameState.terrain[floor] = dungeon.terrain;
+      gameState.decals[floor] = dungeon.decals;
+      gameState.creatures[floor] = dungeon.creatures;
+      gameState.items[floor] = dungeon.items;
+      gameState.explored[floor] = dungeon.explored;
+      gameState.visible[floor] = dungeon.visible;
     }
-    req.session.currentFloor = 1;
+    gameState.currentFloor = 1;
+    req.session.gameState = gameState;
   }
   
   // Save game state to file using session ID as filename
-  const gameState = extractGameStateFromSession(req.session);
   saveGame(req.sessionID, gameState)
     .then(() => {
-      let outputs = dungeon.getOutputs(globals);
-      outputs.mapRefresh = globals.mapRefresh;
+      let outputs = dungeon.getOutputs(gameState.globals);
+      outputs.mapRefresh = gameState.globals.mapRefresh;
       res.json(outputs);
     })
     .catch((err) => {
       console.error('Error saving game state:', err);
       // Still return response even if save fails
-      let outputs = dungeon.getOutputs(globals);
-      outputs.mapRefresh = globals.mapRefresh;
+      let outputs = dungeon.getOutputs(gameState.globals);
+      outputs.mapRefresh = gameState.globals.mapRefresh;
       res.json(outputs);
     });
 });

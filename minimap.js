@@ -7,20 +7,13 @@ const { saveGame, loadGame, extractGameStateFromSession, applyGameStateToSession
 
 router.post('/', (req, res) => {
   // Retrieve the necessary session variables
-  let floor = req.session.currentFloor;
-  let terrain = req.session.terrain[floor];
-  let decals = req.session.decals[floor];
-  let creatures = req.session.creatures[floor];
-  let items = req.session.items[floor];
-  let explored = req.session.explored[floor];
-  let visible = req.session.visible[floor];
+  let gameState = req.session.gameState;
 
   const boardSize = { x: 60, y: 60 };
-  const dungeonSpace = new Terrain(boardSize, terrain);
-  let dungeon = new Dungeon(dungeonSpace, creatures, items, explored, decals, visible);
+  const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
+  let dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
 
   // Save game state to file using session ID as filename
-  const gameState = extractGameStateFromSession(req.session);
   saveGame(req.sessionID, gameState)
     .then(() => {
       // Return the response with the necessary data
