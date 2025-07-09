@@ -533,6 +533,9 @@ router.post('/', (req, res) => {
 
     if (gameState.creatures[gameState.currentFloor][0].hp <= 0) {
       ({ gameState, dungeon } = makeLevels(gameState));
+    } else {
+      const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
+      dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
     }
   } else {
     gameState = initGameState();
