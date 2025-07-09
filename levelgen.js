@@ -523,7 +523,7 @@ router.post('/', (req, res) => {
   let gameState = {};
 
   if (savefileExists('Player')) {
-    gameState = loadGame(req.sessionID);
+    gameState = loadGame('Player');
     gameState.globals = {
       automove:false,
       animations:[],
@@ -531,8 +531,14 @@ router.post('/', (req, res) => {
       mapRefresh:true
     };
 
-    const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
-    dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor]);
+    let terrain = gameState.terrain[gameState.currentFloor];
+    let creatures = gameState.creatures[gameState.currentFloor];
+    let items = gameState.items[gameState.currentFloor];
+    let explored = gameState.explored[gameState.currentFloor];
+    let decals = gameState.decals[gameState.currentFloor];
+
+    const dungeonSpace = new Terrain(boardSize, terrain);
+    dungeon = new Dungeon(dungeonSpace, creatures, items, explored, decals);
 
     if (dungeon.creatures[0].hp > 0) {
       // No action needed if the player is alive

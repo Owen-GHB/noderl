@@ -43,9 +43,16 @@ router.post('/', (req, res) => {
   } else {
     const player = dungeon.creatures[0];
     const oldFloor = gameState.globals.currentFloor;
-    const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
-    dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
-	const position = dungeon.creatures[0].position;
+    let terrain = gameState.terrain[gameState.currentFloor];
+    let creatures = gameState.creatures[gameState.currentFloor];
+    let items = gameState.items[gameState.currentFloor];
+    let explored = gameState.explored[gameState.currentFloor];
+    let decals = gameState.decals[gameState.currentFloor];
+    let visible = gameState.visible[gameState.currentFloor];
+
+    const dungeonSpace = new Terrain(boardSize, terrain);
+    dungeon = new Dungeon(dungeonSpace, creatures, items, explored, decals, visible);
+	  const position = dungeon.creatures[0].position;
     dungeon.creatures[0] = JSON.parse(JSON.stringify(player));
     dungeon.creatures[0].position = position;
     gameState.creatures[gameState.currentFloor] = dungeon.creatures;
