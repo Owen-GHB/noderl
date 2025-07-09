@@ -26,8 +26,6 @@ router.post('/', (req, res) => {
 
   if (dungeon.creatures[0].hp > 0) {
     dungeon.movePlayer(givenCommand, commandModifier, gameState.globals);
-  } else {
-    // Handle the death animation
   }
 
   // Update the game state with the modified dungeon
@@ -59,7 +57,7 @@ router.post('/', (req, res) => {
 	  gameState.globals.mapRefresh = true; 
   }
 
-  // Save game state to file using session ID as filename
+  // Save game state to file
   try {
     saveGame('Player', gameState);
   } catch (err) {

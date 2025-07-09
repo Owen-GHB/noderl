@@ -540,9 +540,7 @@ router.post('/', (req, res) => {
     const dungeonSpace = new Terrain(boardSize, terrain);
     dungeon = new Dungeon(dungeonSpace, creatures, items, explored, decals);
 
-    if (dungeon.creatures[0].hp > 0) {
-      // No action needed if the player is alive
-    } else {
+    if (dungeon.creatures[0].hp <= 0) {
       ({ gameState, dungeon } = makeLevels(gameState));
     }
   } else {
