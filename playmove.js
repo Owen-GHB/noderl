@@ -11,7 +11,7 @@ router.post('/', (req, res) => {
   let commandModifier = req.body.modifier;
   commandModifier = commandModifier.replace(/\\/g, ''); // Remove slashes
   let gameState = {};
-  gameState = loadGame(req.sessionID);
+  gameState = loadGame('Player');
   gameState.globals = {
 	  automove:false,
 	  animations:[],
@@ -42,8 +42,7 @@ router.post('/', (req, res) => {
     gameState.globals.mapRefresh = false;
   } else {
     const player = dungeon.creatures[0];
-    const oldFloor = gameState.currentFloor;
-    gameState = req.session.gameState
+    const oldFloor = gameState.globals.currentFloor;
     const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
     dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
 	const position = dungeon.creatures[0].position;
@@ -55,7 +54,7 @@ router.post('/', (req, res) => {
 
   // Save game state to file using session ID as filename
   try {
-    saveGame(req.sessionID, gameState);
+    saveGame('Player', gameState);
   } catch (err) {
     console.error('Error saving game state:', err);
   }

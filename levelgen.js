@@ -483,12 +483,46 @@ function makeLevel(dungeon, floor) {
   return dungeon;
 }
 
+function initGameState() {
+  return {
+    globals: {
+      automove: false,
+      animations: [],
+      eventLog: [],
+      mapRefresh: true
+    },
+    terrain: [],
+    decals: [],
+    creatures: [],
+    items: [],
+    explored: [],
+    visible: []
+  };
+}
+
+function makeLevels(gameState) {
+  let dungeon;
+  for (let floor = 9; floor > 0; floor--) {
+    dungeon = new Dungeon();
+    dungeon = makeLevel(dungeon, floor);
+
+    gameState.terrain[floor] = dungeon.terrain;
+    gameState.decals[floor] = dungeon.decals;
+    gameState.creatures[floor] = dungeon.creatures;
+    gameState.items[floor] = dungeon.items;
+    gameState.explored[floor] = dungeon.explored;
+    gameState.visible[floor] = dungeon.visible;
+  }
+  gameState.currentFloor = 1;
+  return { gameState, dungeon };
+}
+
 router.post('/', (req, res) => {
   const boardSize = { x: 60, y: 60 };
   let dungeon;
   let gameState = {};
 
-  if (savefileExists(req.sessionID)) {
+  if (savefileExists('Player')) {
     gameState = loadGame(req.sessionID);
     gameState.globals = {
       automove:false,
@@ -503,50 +537,16 @@ router.post('/', (req, res) => {
     if (dungeon.creatures[0].hp > 0) {
       // No action needed if the player is alive
     } else {
-      for (let floor = 9; floor > 0; floor--) {
-        dungeon = new Dungeon();
-        dungeon = makeLevel(dungeon, floor);
-
-        gameState.terrain[floor] = dungeon.terrain;
-        gameState.decals[floor] = dungeon.decals;
-        gameState.creatures[floor] = dungeon.creatures;
-        gameState.items[floor] = dungeon.items;
-        gameState.explored[floor] = dungeon.explored;
-        gameState.visible[floor] = dungeon.visible;
-      }
-      gameState.currentFloor = 1;
+      ({ gameState, dungeon } = makeLevels(gameState));
     }
   } else {
-    gameState.globals = {
-      automove:false,
-      animations:[],
-      eventLog:[],
-      mapRefresh:true
-    };
-	gameState.terrain = [];
-	gameState.decals = [];
-	gameState.creatures = [];
-	gameState.items = [];
-	gameState.explored = [];
-	gameState.visible = [];
-    // again note the decrementing floor index
-    for (let floor = 9; floor > 0; floor--) {
-      dungeon = new Dungeon();
-      dungeon = makeLevel(dungeon, floor);
-
-      gameState.terrain[floor] = dungeon.terrain;
-      gameState.decals[floor] = dungeon.decals;
-      gameState.creatures[floor] = dungeon.creatures;
-      gameState.items[floor] = dungeon.items;
-      gameState.explored[floor] = dungeon.explored;
-      gameState.visible[floor] = dungeon.visible;
-    }
-    gameState.currentFloor = 1;
+    gameState = initGameState();
+    ({ gameState, dungeon } = makeLevels(gameState));
   }
   
   // Save game state to file using session ID as filename
   try {
-    saveGame(req.sessionID, gameState);
+    saveGame('Player', gameState);
   } catch (err) {
     console.error('Error saving game state:', err);
   }

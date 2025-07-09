@@ -7,7 +7,7 @@ const { saveGame, loadGame } = require('./savefile.js');
 
 router.post('/', (req, res) => {
   // Retrieve the necessary session variables
-  let gameState = loadGame(req.sessionID);
+  let gameState = loadGame('Player');
 
   const boardSize = { x: 60, y: 60 };
   const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
@@ -15,7 +15,7 @@ router.post('/', (req, res) => {
 
   // Save game state to file using session ID as filename
   try {
-    saveGame(req.sessionID, gameState);
+    saveGame('Player', gameState);
   } catch (err) {
     console.error('Error saving game state:', err);
   }
