@@ -11,6 +11,22 @@ document.addEventListener('DOMContentLoaded', function(){
 	var newtiles=false;
 	var casting=false;
 	var opentab="items";
+
+	async function postData(url = '', data = {}) {
+	    const response = await fetch(url, {
+	        method: 'POST',
+	        headers: {
+	            'Content-Type': 'application/x-www-form-urlencoded',
+	        },
+	        body: new URLSearchParams(data).toString()
+	    });
+	    if (!response.ok) {
+	        console.error(`HTTP error! status: ${response.status}`);
+	        return null;
+	    }
+	    return response.text();
+	}
+
 	function refreshgame(outputs,lastoutput,lastinput){
 		//main update sequence called from animate
 		var ctx = document.getElementById("map").getContext("2d");
@@ -19,23 +35,15 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.font = "12px";
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
-			fetch("playmove", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/x-www-form-urlencoded"
-				},
-				body: new URLSearchParams(lastinput)
-			})
-			.then(response => response.text())
-			.then(data => {
+			postData("playmove",lastinput).then(data => {
+				if (data === null) return; // Error handled in postData
 				var output=parsedata(data);
 				lastoutputs=refreshgame(output,outputs,lastinput);
-			})
-			.catch(error => console.error("Error:", error));
+			}).catch(error => console.error('Fetch error:', error));
 		}
 		return outputs;
 	}
-	document.addEventListener('keydown', function(e){
+	document.addEventListener('keydown',function(e){
 		e.preventDefault();
 		if (!waiting){
 			var keycode = e.which;        
@@ -108,19 +116,11 @@ document.addEventListener('DOMContentLoaded', function(){
 				ctx.font = "12px";
 				ctx.fillStyle = "#C0C0C0";
 				ctx.fillText("Waiting for server",0,10);
-				fetch("playmove", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded"
-					},
-					body: new URLSearchParams(move)
-				})
-				.then(response => response.text())
-				.then(data => {
+				postData("playmove",move).then(data => {
+					if (data === null) return;
 					var output=parsedata(data);
 					lastoutputs=refreshgame(output,lastoutputs,move);
-				})
-				.catch(error => console.error("Error:", error));
+				}).catch(error => console.error('Fetch error:', error));
 			}
 		}
 	});
@@ -144,33 +144,17 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
 			if (event.shiftKey){
-				fetch("playmove", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded"
-					},
-					body: new URLSearchParams({command:"cast",modifier:JSON.stringify(input)})
-				})
-				.then(response => response.text())
-				.then(data => {
+				postData("playmove",{command:"cast",modifier:JSON.stringify(input)}).then(data => {
+					if (data === null) return;
 					var outputs=parsedata(data);
 					lastoutputs=refreshgame(outputs,lastoutputs);
-				})
-				.catch(error => console.error("Error:", error));
+				}).catch(error => console.error('Fetch error:', error));
 			} else {
-				fetch("playmove", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded"
-					},
-					body: new URLSearchParams({command:"moveto",modifier:JSON.stringify(input)})
-				})
-				.then(response => response.text())
-				.then(data => {
+				postData("playmove",{command:"moveto",modifier:JSON.stringify(input)}).then(data => {
+					if (data === null) return;
 					var outputs=parsedata(data);
 					lastoutputs=refreshgame(outputs,lastoutputs,{command:"moveto",modifier:JSON.stringify(input)});
-				})
-				.catch(error => console.error("Error:", error));
+				}).catch(error => console.error('Fetch error:', error));
 			}
 		}
 	});
@@ -215,21 +199,13 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.font = "12px";
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
-			fetch("levelgen", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/x-www-form-urlencoded"
-				},
-				body: new URLSearchParams({dud:0})
-			})
-			.then(response => response.text())
-			.then(data => {
-				//$("#player").attr("src","getplayerimg?tilesize=108");
+			postData("levelgen",{dud:0}).then(data => {
+				if (data === null) return;
+				//document.getElementById("player").src = "getplayerimg?tilesize=108"; // If we were to uncomment this
 				var outputs=parsedata(data);
 				lastoutputs=refreshgame(outputs,lastoutputs);
 				document.getElementById("movelog").innerHTML = "Player has entered the dungeon</br>";
-			})
-			.catch(error => console.error("Error:", error));
+			}).catch(error => console.error('Fetch error:', error));
 		}
 	});
 	document.getElementById("controls").addEventListener('mousemove', function(event){
@@ -301,19 +277,11 @@ document.addEventListener('DOMContentLoaded', function(){
 					ctx.fillStyle = "#C0C0C0";
 					ctx.fillText("Waiting for server",0,10);
 					var move = {command:"moveto",modifier:JSON.stringify(input)};
-					fetch("playmove", {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/x-www-form-urlencoded"
-						},
-						body: new URLSearchParams(move)
-					})
-					.then(response => response.text())
-					.then(data => {
+					postData("playmove",move).then(data => {
+						if (data === null) return;
 						var outputs=parsedata(data);
 						lastoutputs=refreshgame(outputs,lastoutputs,move);
-					})
-					.catch(error => console.error("Error:", error));
+					}).catch(error => console.error('Fetch error:', error));
 				}
 				fback="minimap";
 			} else {
@@ -332,19 +300,11 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
 							var move = {command:"moveto",modifier:JSON.stringify(input)};
-							fetch("playmove", {
-								method: "POST",
-								headers: {
-									"Content-Type": "application/x-www-form-urlencoded"
-								},
-								body: new URLSearchParams(move)
-							})
-							.then(response => response.text())
-							.then(data => {
+							postData("playmove",move).then(data => {
+								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs,move);
-							})
-							.catch(error => console.error("Error:", error));
+							}).catch(error => console.error('Fetch error:', error));
 						}
 					} else if (mousex<284){
 						fback="fight";
@@ -356,19 +316,11 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							fetch("playmove", {
-								method: "POST",
-								headers: {
-									"Content-Type": "application/x-www-form-urlencoded"
-								},
-								body: new URLSearchParams({command:"moveto",modifier:JSON.stringify(input)})
-							})
-							.then(response => response.text())
-							.then(data => {
+							postData("playmove",{command:"moveto",modifier:JSON.stringify(input)}).then(data => {
+								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
-							})
-							.catch(error => console.error("Error:", error));
+							}).catch(error => console.error('Fetch error:', error));
 						} else {
 							lastoutputs.movelog=["No creature in view"];
 							updategame(lastoutputs,mapsize,radius,opentab);
@@ -382,19 +334,11 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							fetch("playmove", {
-								method: "POST",
-								headers: {
-									"Content-Type": "application/x-www-form-urlencoded"
-								},
-								body: new URLSearchParams({command:input,modifier:100})
-							})
-							.then(response => response.text())
-							.then(data => {
+							postData("playmove",{command:input,modifier:100}).then(data => {
+								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
-							})
-							.catch(error => console.error("Error:", error));
+							}).catch(error => console.error('Fetch error:', error));
 						}
 					} else {
 						fback="cast";
@@ -406,19 +350,11 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							fetch("playmove", {
-								method: "POST",
-								headers: {
-									"Content-Type": "application/x-www-form-urlencoded"
-								},
-								body: new URLSearchParams({command:"cast",modifier:JSON.stringify(input)})
-							})
-							.then(response => response.text())
-							.then(data => {
+							postData("playmove",{command:"cast",modifier:JSON.stringify(input)}).then(data => {
+								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
-							})
-							.catch(error => console.error("Error:", error));
+							}).catch(error => console.error('Fetch error:', error));
 						} else {
 							lastoutputs.movelog=[];
 							updategame(lastoutputs,mapsize,radius);
@@ -480,19 +416,11 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							fetch("playmove", {
-								method: "POST",
-								headers: {
-									"Content-Type": "application/x-www-form-urlencoded"
-								},
-								body: new URLSearchParams({command:input,modifier:itemchoice})
-							})
-							.then(response => response.text())
-							.then(data => {
+							postData("playmove",{command:input,modifier:itemchoice}).then(data => {
+								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
-							})
-							.catch(error => console.error("Error:", error));
+							}).catch(error => console.error('Fetch error:', error));
 						}
 					}
 				} else if (opentab=="options"){
@@ -504,19 +432,11 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							fetch("playmove", {
-								method: "POST",
-								headers: {
-									"Content-Type": "application/x-www-form-urlencoded"
-								},
-								body: new URLSearchParams({command:input,modifier:false})
-							})
-							.then(response => response.text())
-							.then(data => {
+							postData("playmove",{command:input,modifier:false}).then(data => {
+								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
-							})
-							.catch(error => console.error("Error:", error));
+							}).catch(error => console.error('Fetch error:', error));
 						}
 					}
 				};

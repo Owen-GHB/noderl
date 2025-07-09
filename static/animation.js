@@ -1,3 +1,18 @@
+async function postData(url = '', data = {}) {
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(data).toString()
+    });
+    if (!response.ok) {
+        console.error(`HTTP error! status: ${response.status}`);
+        return null;
+    }
+    return response.text();
+}
+
 function updategame(output,mapsize,radius,opentab){
 	var offset = {x:0, y:0};
 	var tilesize=Math.floor(mapsize/(2*radius+1));
@@ -7,15 +22,8 @@ function updategame(output,mapsize,radius,opentab){
 	drawviscreatures(output.creatures,output.stats.position,offset,mapsize,radius);
 	drawplayer(radius*tilesize,radius*tilesize,output.stats.equipment,mapsize,radius);
 	if (output.mapRefresh) {
-		fetch("minimap", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/x-www-form-urlencoded"
-			},
-			body: new URLSearchParams({dud:0})
-		})
-		.then(response => response.text())
-		.then(data => {
+		postData("minimap",{dud:0}).then(data => {
+			if (data === null) return;
 			var mapctx = document.getElementById("controls").getContext("2d");
 			mapctx.fillStyle = "#000000";
 			mapctx.fillRect(0,0,180,180);
@@ -38,8 +46,7 @@ function updategame(output,mapsize,radius,opentab){
 					}
 				}
 			}
-		})
-		.catch(error => console.error("Error:", error));
+		}).catch(error => console.error('Fetch error:', error));
 	}
 	var ctx = document.getElementById("controls").getContext("2d");
 	ctx.fillStyle = "#000000";
@@ -75,21 +82,21 @@ function updategame(output,mapsize,radius,opentab){
 		for (item=0;item<14;item++){
 			if (typeof output.stats.inventory[item]!='undefined'){
 				var itemtype=output.stats.inventory[item].type;
-				document.querySelector("#inventory [value='"+item+"']").setAttribute("src","getimage?imageof="+itemtype+"&tilesize=32");
+				document.querySelector("#inventory [value='"+item+"']").src = "getimage?imageof="+itemtype+"&tilesize=32";
 				newimg = document.getElementById(itemtype);
 				ctx.drawImage(newimg,136+(item%7)*36,378+Math.floor(item/7)*50,36,36);
 			} else {
-				document.querySelector("#inventory [value='"+item+"']").setAttribute("src","getimage?imageof=none&tilesize=32");
+				document.querySelector("#inventory [value='"+item+"']").src = "getimage?imageof=none&tilesize=32";
 			}
 		}
 		for (item=0;item<7;item++){
 			if (output.stats.equipment[item]){
 				var itemtype=output.stats.equipment[item].type;
-				document.querySelector("#equipment [value='"+item+"']").setAttribute("src","getimage?imageof="+itemtype+"&tilesize=36");
+				document.querySelector("#equipment [value='"+item+"']").src = "getimage?imageof="+itemtype+"&tilesize=36";
 				newimg = document.getElementById(itemtype);
 				ctx.drawImage(newimg,136+item*36,326,36,36);
 			} else {
-				document.querySelector("#equipment [value='"+item+"']").setAttribute("src","getimage?imageof=none&tilesize=36");
+				document.querySelector("#equipment [value='"+item+"']").src = "getimage?imageof=none&tilesize=36";
 			}
 		}
 		if (typeof output.stats.onground!='undefined') for (item=0;item<7;item++){
@@ -100,11 +107,11 @@ function updategame(output,mapsize,radius,opentab){
 				} else if (itemtype=="weapon"||itemtype=="armour"||itemtype=="shield"||itemtype=="helmet") {
 					itemtype=output.stats.onground[item].name;
 				}
-				document.querySelector("#ground [value='"+item+"']").setAttribute("src","getimage?imageof="+itemtype+"&tilesize=32");
+				document.querySelector("#ground [value='"+item+"']").src = "getimage?imageof="+itemtype+"&tilesize=32";
 				newimg = document.getElementById(itemtype);
 				ctx.drawImage(newimg,136+item*36,472,36,36);
 			} else {
-				document.querySelector("#ground [value='"+item+"']").setAttribute("src","getimage?imageof=none&tilesize=32");
+				document.querySelector("#ground [value='"+item+"']").src = "getimage?imageof=none&tilesize=32";
 			}
 		}
 	}
@@ -112,16 +119,15 @@ function updategame(output,mapsize,radius,opentab){
 	for (spell=0;spell<7;spell++){
 		if (typeof output.stats.repetoire[spell]!='undefined'){
 			var spelltype=output.stats.repetoire[spell].school;
-			document.querySelector("#spells [value='"+spell+"']").setAttribute("src","getimage?imageof="+spelltype+"&tilesize=32");
+			document.querySelector("#spells [value='"+spell+"']").src = "getimage?imageof="+spelltype+"&tilesize=32";
 		} else {
-			document.querySelector("#spells [value='"+spell+"']").setAttribute("src","getimage?imageof=none&tilesize=32");
+			document.querySelector("#spells [value='"+spell+"']").src = "getimage?imageof=none&tilesize=32";
 		}
 	}
 	
-	const movelogElement = document.getElementById("movelog");
 	for (move in output.movelog){
-		movelogElement.insertAdjacentHTML('afterbegin', output.movelog[move]+"<br/>");
-		movelogElement.scrollTop = 0;
+		document.getElementById("movelog").insertAdjacentHTML("afterbegin", output.movelog[move]+"<br/>");
+		document.getElementById("movelog").scrollTop = 0;
 	}
 	return output;
 }
