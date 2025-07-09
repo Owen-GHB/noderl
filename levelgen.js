@@ -4,7 +4,7 @@ const router = express.Router();
 const { Terrain, DungeonSpace } = require('./mapclass.js');
 const { Dungeon } = require('./dungeon.js');
 const fs = require('fs');
-const { saveGame, loadGame, extractGameStateFromSession, applyGameStateToSession } = require('./savefile.js');
+const { saveGame, loadGame } = require('./savefile.js');
 
 function buildRandomPath(toFill, sectorSpace) {
   let step = 0;
@@ -483,79 +483,104 @@ function makeLevel(dungeon, floor) {
   return dungeon;
 }
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const boardSize = { x: 60, y: 60 };
   let dungeon;
+  let gameState;
   let globals = {
-	  automove:false,
-	  animations:[],
-	  eventLog:[],
-	  mapRefresh:true
+    automove: false,
+    animations: [],
+    eventLog: [],
+    mapRefresh: true // Assume refresh is needed initially
   };
 
-  if (req.session.currentFloor) {
-    const floor = req.session.currentFloor;
-    const terrain = req.session.terrain[floor];
-    const decals = req.session.decals[floor];
-    const creatures = req.session.creatures[floor];
-    const items = req.session.items[floor];
-    const explored = req.session.explored[floor];
+  try {
+    gameState = await loadGame(req.sessionID);
+    // Successfully loaded game state
+    const currentFloorData = gameState.terrain[gameState.currentFloor];
+    const dungeonSpace = new Terrain(boardSize, currentFloorData);
+    dungeon = new Dungeon(
+      dungeonSpace,
+      gameState.creatures[gameState.currentFloor],
+      gameState.items[gameState.currentFloor],
+      gameState.explored[gameState.currentFloor],
+      gameState.decals[gameState.currentFloor],
+      gameState.visible[gameState.currentFloor]
+    );
 
-    const dungeonSpace = new Terrain(boardSize, terrain);
-    dungeon = new Dungeon(dungeonSpace, creatures, items, explored, decals);
-
-    if (dungeon.creatures[0].hp > 0) {
-      // No action needed if the player is alive
-    } else {
+    if (dungeon.creatures[0].hp <= 0) {
+      // Player is dead, generate a new game
+      console.log(`Player dead in loaded game ${req.sessionID}. Generating new game.`);
+      gameState = {
+        terrain: [],
+        decals: [],
+        creatures: [],
+        items: [],
+        explored: [],
+        visible: []
+      };
       for (let floor = 9; floor > 0; floor--) {
-        dungeon = new Dungeon();
+        dungeon = new Dungeon(); // Fresh dungeon for each floor
         dungeon = makeLevel(dungeon, floor);
-
-        req.session.terrain[floor] = dungeon.terrain;
-        req.session.decals[floor] = dungeon.decals;
-        req.session.creatures[floor] = dungeon.creatures;
-        req.session.items[floor] = dungeon.items;
-        req.session.explored[floor] = dungeon.explored;
-        req.session.visible[floor] = dungeon.visible;
+        gameState.terrain[floor] = dungeon.terrain;
+        gameState.decals[floor] = dungeon.decals;
+        gameState.creatures[floor] = dungeon.creatures;
+        gameState.items[floor] = dungeon.items;
+        gameState.explored[floor] = dungeon.explored;
+        gameState.visible[floor] = dungeon.visible;
       }
-      req.session.currentFloor = 1;
+      gameState.currentFloor = 1;
+      // dungeon variable already represents floor 1 due to the loop's final iteration
+    } else {
+      // Player is alive, game loaded successfully
+      console.log(`Game ${req.sessionID} loaded successfully. Player alive.`);
+      globals.mapRefresh = true; // Or determine if map needs refresh based on other logic
     }
-  } else {
-	req.session.terrain = [];
-	req.session.decals = [];
-	req.session.creatures = [];
-	req.session.items = [];
-	req.session.explored = [];
-	req.session.visible = [];
-    for (let floor = 9; floor > 0; floor--) {
-      dungeon = new Dungeon();
-      dungeon = makeLevel(dungeon, floor);
-
-      req.session.terrain[floor] = dungeon.terrain;
-      req.session.decals[floor] = dungeon.decals;
-      req.session.creatures[floor] = dungeon.creatures;
-      req.session.items[floor] = dungeon.items;
-      req.session.explored[floor] = dungeon.explored;
-      req.session.visible[floor] = dungeon.visible;
+  } catch (error) {
+    if (error.message.startsWith('Save file not found') || error.code === 'ENOENT') {
+      console.log(`No save file found for ${req.sessionID}. Generating new game.`);
+      // No save file found, generate a new game
+      gameState = {
+        terrain: [],
+        decals: [],
+        creatures: [],
+        items: [],
+        explored: [],
+        visible: []
+      };
+      for (let floor = 9; floor > 0; floor--) {
+        dungeon = new Dungeon(); // Fresh dungeon for each floor
+        dungeon = makeLevel(dungeon, floor);
+        gameState.terrain[floor] = dungeon.terrain;
+        gameState.decals[floor] = dungeon.decals;
+        gameState.creatures[floor] = dungeon.creatures;
+        gameState.items[floor] = dungeon.items;
+        gameState.explored[floor] = dungeon.explored;
+        gameState.visible[floor] = dungeon.visible;
+      }
+      gameState.currentFloor = 1;
+      // dungeon variable already represents floor 1 due to the loop's final iteration
+    } else {
+      // Other error during load
+      console.error('Error loading game state:', error);
+      return res.status(500).json({ error: 'Failed to load game data.' });
     }
-    req.session.currentFloor = 1;
   }
-  
-  // Save game state to file using session ID as filename
-  const gameState = extractGameStateFromSession(req.session);
-  saveGame(req.sessionID, gameState)
-    .then(() => {
-      let outputs = dungeon.getOutputs(globals);
-      outputs.mapRefresh = globals.mapRefresh;
-      res.json(outputs);
-    })
-    .catch((err) => {
-      console.error('Error saving game state:', err);
-      // Still return response even if save fails
-      let outputs = dungeon.getOutputs(globals);
-      outputs.mapRefresh = globals.mapRefresh;
-      res.json(outputs);
-    });
+
+  try {
+    // Ensure gameState is correctly structured for saving (it should be by now)
+    // The extractGameStateFromSession is no longer needed as gameState is built directly
+    await saveGame(req.sessionID, gameState);
+    let outputs = dungeon.getOutputs(globals); // dungeon should be the one for currentFloor
+    outputs.mapRefresh = globals.mapRefresh;
+    res.json(outputs);
+  } catch (saveError) {
+    console.error('Error saving game state:', saveError);
+    // Still attempt to return response even if save fails, but log the error
+    let outputs = dungeon.getOutputs(globals);
+    outputs.mapRefresh = globals.mapRefresh;
+    res.status(500).json(outputs); // Send 500 if save fails, but still provide game state if possible
+  }
 });
 
 module.exports = router;

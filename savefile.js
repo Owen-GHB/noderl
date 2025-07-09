@@ -185,38 +185,36 @@ async function deleteSaveFile(saveFileName) {
  * @param {Object} session - Express session object
  * @returns {Object} Game state object ready for saving
  */
-function extractGameStateFromSession(session) {
-  return {
-    currentFloor: session.currentFloor,
-    terrain: session.terrain,
-    decals: session.decals,
-    creatures: session.creatures,
-    items: session.items,
-    explored: session.explored,
-    visible: session.visible
-  };
-}
+// function extractGameStateFromSession(session) { // No longer needed
+//   return {
+//     currentFloor: session.currentFloor,
+//     terrain: session.terrain,
+//     decals: session.decals,
+//     creatures: session.creatures,
+//     items: session.items,
+//     explored: session.explored,
+//     visible: session.visible
+//   };
+// }
 
 /**
  * Apply loaded game state to Express session
  * @param {Object} session - Express session object
  * @param {Object} gameState - Loaded game state
  */
-function applyGameStateToSession(session, gameState) {
-  session.currentFloor = gameState.currentFloor;
-  session.terrain = gameState.terrain;
-  session.decals = gameState.decals;
-  session.creatures = gameState.creatures;
-  session.items = gameState.items;
-  session.explored = gameState.explored;
-  session.visible = gameState.visible;
-}
+// function applyGameStateToSession(session, gameState) { // No longer needed
+//   session.currentFloor = gameState.currentFloor;
+//   session.terrain = gameState.terrain;
+//   session.decals = gameState.decals;
+//   session.creatures = gameState.creatures;
+//   session.items = gameState.items;
+//   session.explored = gameState.explored;
+//   session.visible = gameState.visible;
+// }
 
 module.exports = {
   saveGame,
   loadGame,
   listSaveFiles,
-  deleteSaveFile,
-  extractGameStateFromSession,
-  applyGameStateToSession
+  deleteSaveFile
 };
