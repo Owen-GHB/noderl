@@ -503,7 +503,6 @@ router.post('/', (req, res) => {
     if (dungeon.creatures[0].hp > 0) {
       // No action needed if the player is alive
     } else {
-      //note the floor index decrements from 9 to 1 so the 'dungeon' variable already represents floor 1 when we set currentFloor = 1
       for (let floor = 9; floor > 0; floor--) {
         dungeon = new Dungeon();
         dungeon = makeLevel(dungeon, floor);
@@ -516,7 +515,6 @@ router.post('/', (req, res) => {
         gameState.visible[floor] = dungeon.visible;
       }
       gameState.currentFloor = 1;
-      req.session.gameState = gameState;
     }
   } else {
     gameState.globals = {
@@ -544,7 +542,6 @@ router.post('/', (req, res) => {
       gameState.visible[floor] = dungeon.visible;
     }
     gameState.currentFloor = 1;
-    req.session.gameState = gameState;
   }
   
   // Save game state to file using session ID as filename
