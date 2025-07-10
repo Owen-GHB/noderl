@@ -6,26 +6,39 @@
   "orcsoldier",
   "orccaptain",
   "orcshaman"
-];%>
+]; %>
+
 <% creatures.forEach(function(creature) { %>
     <div>
-        <img class="graphic" id="<%= creature.creaturetype %>144" src="/api?command=image&modifier=<%= encodeURIComponent(JSON.stringify({imageof: creature.creaturetype, tilesize: 144})) %>"></img>
-        <img class="graphic" id="<%= creature.creaturetype %>" src="/api?command=image&modifier=<%= encodeURIComponent(JSON.stringify({imageof: creature.creaturetype, tilesize: 36})) %>"></img>
-        <% if (!nocorpse.includes(creature.creaturetype)) { %>
-            <img class="graphic" id="<%= creature.creaturetype %>corpse144" src="/api?command=image&modifier=<%= encodeURIComponent(JSON.stringify({imageof: creature.creaturetype + 'corpse', tilesize: 144})) %>"></img>
-            <img class="graphic" id="<%= creature.creaturetype %>corpse" src="/api?command=image&modifier=<%= encodeURIComponent(JSON.stringify({imageof: creature.creaturetype + 'corpse', tilesize: 36})) %>"></img>
+        <img class="graphic" id="<%= creature.creaturetype %>144"
+             src="/api?json=<%= encodeURIComponent(JSON.stringify({ command: 'image', modifier: { imageof: creature.creaturetype, tilesize: 144 } })) %>">
+        </img>
+        <img class="graphic" id="<%= creature.creaturetype %>"
+             src="/api?json=<%= encodeURIComponent(JSON.stringify({ command: 'image', modifier: { imageof: creature.creaturetype, tilesize: 36 } })) %>">
+        </img>
+        <% if (!nocorpse.includes(creature.creaturetype)) { 
+            const corpseName = creature.creaturetype + 'corpse';
+        %>
+            <img class="graphic" id="<%= corpseName %>144"
+                 src="/api?json=<%= encodeURIComponent(JSON.stringify({ command: 'image', modifier: { imageof: corpseName, tilesize: 144 } })) %>">
+            </img>
+            <img class="graphic" id="<%= corpseName %>"
+                 src="/api?json=<%= encodeURIComponent(JSON.stringify({ command: 'image', modifier: { imageof: corpseName, tilesize: 36 } })) %>">
+            </img>
         <% } %>
     </div>
 <% }) %>
-<% const miscclasses = [
-  "potion",
-  "ring"
-];%>
+
+<% const miscclasses = [ "potion", "ring" ]; %>
 <% items.forEach(function(item) { %>
     <% if (!miscclasses.includes(item.class)) { %>
         <div>
-            <img class="graphic" id="<%= item.name %>144" src="/api?command=image&modifier=<%= encodeURIComponent(JSON.stringify({imageof: item.name, tilesize: 144})) %>"></img>
-            <img class="graphic" id="<%= item.name %>" src="/api?command=image&modifier=<%= encodeURIComponent(JSON.stringify({imageof: item.name, tilesize: 36})) %>"></img>
+            <img class="graphic" id="<%= item.name %>144"
+                 src="/api?json=<%= encodeURIComponent(JSON.stringify({ command: 'image', modifier: { imageof: item.name, tilesize: 144 } })) %>">
+            </img>
+            <img class="graphic" id="<%= item.name %>"
+                 src="/api?json=<%= encodeURIComponent(JSON.stringify({ command: 'image', modifier: { imageof: item.name, tilesize: 36 } })) %>">
+            </img>
         </div>
     <% } %>
 <% }) %>

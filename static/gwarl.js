@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.font = "12px";
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
-			postData("/api", lastinput).then(data => { // Changed URL to /api
+			postData("/api", lastinput).then(data => {
 				if (data === null) return; // Error handled in postData
 				var output=parsedata(data);
 				lastoutputs=refreshgame(output,outputs,lastinput);
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					move={command:"wait",modifier:100};
 					break;
 				case 69:
-					move={command:"moveto",modifier:JSON.stringify("explore")};
+					move={command:"moveto",modifier:"explore"};
 					break;
 				case 70:
 					if (!lastoutputs || !lastoutputs.creatures) return; // Guard clause
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				ctx.font = "12px";
 				ctx.fillStyle = "#C0C0C0";
 				ctx.fillText("Waiting for server",0,10);
-				postData("/api", move).then(data => { // Changed URL to /api
+				postData("/api", move).then(data => {
 					if (data === null) return;
 					var output=parsedata(data);
 					lastoutputs=refreshgame(output,lastoutputs,move);
@@ -147,16 +147,16 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
 			if (event.shiftKey){
-				postData("/api", {command:"cast",modifier:JSON.stringify(input)}).then(data => { // Changed URL to /api
+				postData("/api", {command:"cast",modifier:input}).then(data => {
 					if (data === null) return;
 					var outputs=parsedata(data);
 					lastoutputs=refreshgame(outputs,lastoutputs);
 				}).catch(error => console.error('Fetch error:', error));
 			} else {
-				postData("/api", {command:"moveto",modifier:JSON.stringify(input)}).then(data => { // Changed URL to /api
+				postData("/api", {command:"moveto",modifier:input}).then(data => {
 					if (data === null) return;
 					var outputs=parsedata(data);
-					lastoutputs=refreshgame(outputs,lastoutputs,{command:"moveto",modifier:JSON.stringify(input)});
+					lastoutputs=refreshgame(outputs,lastoutputs,{command:"moveto",modifier:input});
 				}).catch(error => console.error('Fetch error:', error));
 			}
 		}
@@ -205,9 +205,8 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.font = "12px";
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
-			postData("/api", {command:"start", modifier:"Player"}).then(data => { // Changed URL to /api and added command/modifier
+			postData("/api", {command:"start", modifier:"Player"}).then(data => { 
 				if (data === null) return;
-				//document.getElementById("player").src = "getplayerimg?tilesize=108"; // If we were to uncomment this
 				var outputs=parsedata(data);
 				lastoutputs=refreshgame(outputs,lastoutputs);
 				document.getElementById("movelog").innerHTML = "Player has entered the dungeon</br>";
@@ -282,8 +281,8 @@ document.addEventListener('DOMContentLoaded', function(){
 					ctx.font = "12px";
 					ctx.fillStyle = "#C0C0C0";
 					ctx.fillText("Waiting for server",0,10);
-					var move = {command:"moveto",modifier:JSON.stringify(input)};
-					postData("/api", move).then(data => { // Changed URL to /api
+					var move = {command:"moveto",modifier:input};
+					postData("/api", move).then(data => {
 						if (data === null) return;
 						var outputs=parsedata(data);
 						lastoutputs=refreshgame(outputs,lastoutputs,move);
@@ -305,8 +304,8 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							var move = {command:"moveto",modifier:JSON.stringify(input)};
-							postData("/api", move).then(data => { // Changed URL to /api
+							var move = {command:"moveto",modifier:input};
+							postData("/api", move).then(data => {
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs,move);
@@ -322,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api", {command:"moveto",modifier:JSON.stringify(input)}).then(data => { // Changed URL to /api
+							postData("/api", {command:"moveto",modifier:input}).then(data => {
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
@@ -340,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api", {command:input,modifier:100}).then(data => { // Changed URL to /api
+							postData("/api", {command:input,modifier:100}).then(data => {
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
@@ -356,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api", {command:"cast",modifier:JSON.stringify(input)}).then(data => { // Changed URL to /api
+							postData("/api", {command:"cast",modifier:input}).then(data => {
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
@@ -422,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api", {command:input,modifier:itemchoice}).then(data => { // Changed URL to /api
+							postData("/api", {command:input,modifier:itemchoice}).then(data => {
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
@@ -438,7 +437,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api", {command:input,modifier:false}).then(data => { // Changed URL to /api
+							postData("/api", {command:input,modifier:false}).then(data => {
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);

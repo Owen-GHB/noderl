@@ -170,10 +170,6 @@ class Dungeon extends Terrain {
 	  this.automove = globals.automove;
 	  this.mapRefresh = globals.mapRefresh;
 	  this.currentFloor = globals.currentFloor;
-	  // modifier is now expected to be pre-parsed by http-api.js
-	  // Old lines:
-	  // modifier = modifier.replace(/\\/g, '');
-	  // modifier = JSON.parse(modifier);
 	  switch (command) {
 		case "move":
 		  if (typeof modifier === 'number') {

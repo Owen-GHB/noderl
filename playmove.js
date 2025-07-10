@@ -123,18 +123,7 @@ function startFromSavefile(filename) {
 }
 
 async function getImageBuffer(modifier) {
-  let tilesize, imageof;
-  try {
-    const imageParams = JSON.parse(modifier);
-    tilesize = parseInt(imageParams.tilesize, 10);
-    imageof = imageParams.imageof;
-    if (isNaN(tilesize) || typeof imageof !== 'string') {
-      throw new Error("Invalid parameters for image command");
-    }
-  } catch (e) {
-    throw new Error("Invalid or missing JSON modifier for image command. Expected { \"tilesize\": <int>, \"imageof\": \"<string>\" }");
-  }
-
+  let {tilesize, imageof} = modifier;
   const canvas = createCanvas(tilesize, tilesize);
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, tilesize, tilesize);
@@ -145,9 +134,6 @@ async function getImageBuffer(modifier) {
         ctx.drawImage(original, 0, 0, tilesize, tilesize);
     } catch (imgError) {
         console.error(`Error loading image ${imageof}:`, imgError);
-        // Optionally send a default image or error image
-        ctx.fillStyle = "#FF0000"; // Red for error
-        ctx.fillRect(0, 0, tilesize, tilesize);
     }
   } else {
     ctx.fillStyle = "#000000";

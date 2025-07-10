@@ -22,7 +22,7 @@ function updategame(output,mapsize,radius,opentab){
 	drawviscreatures(output.creatures,output.stats.position,offset,mapsize,radius);
 	drawplayer(radius*tilesize,radius*tilesize,output.stats.equipment,mapsize,radius);
 	if (output.mapRefresh) {
-		postData("/api", {command:"info", modifier:"minimap"}).then(data => { // Changed URL and payload
+		postData("/api", {command:"info", modifier:"minimap"}).then(data => {
 			if (data === null) return;
 			var mapctx = document.getElementById("controls").getContext("2d");
 			mapctx.fillStyle = "#000000";
