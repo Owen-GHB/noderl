@@ -6,18 +6,28 @@ const { processWithSavefile, returnMinimap, getImageBuffer, startFromSavefile } 
 
 // Unified API endpoint
 router.all('/api', async (req, res) => {
-  let command, modifier, filename, outputs;
+  let command, modifier, filename, outputs, data;
 
   if (req.method === 'POST') {
-    ({ command, modifier } = req.body);
+    if (req.body.json) {
+      data = JSON.parse(req.body.json);
+    } else {
+      return res.status(400).json({ error: "JSON data not provided in POST request" });
+    }
   } else if (req.method === 'GET') {
-    ({ command, modifier } = req.query);
+    if (req.query.json) {
+      data = JSON.parse(req.query.json);
+    } else {
+      return res.status(400).json({ error: "JSON data not provided in GET request" });
+    }
   } else {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
+  ({ command, modifier } = data);
+
   if (typeof command === 'undefined') {
-    return res.status(400).json({ error: "Command not provided" });
+    return res.status(400).json({ error: "Command not provided in JSON data" });
   }
 
   switch (command) {
