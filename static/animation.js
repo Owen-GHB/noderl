@@ -4,7 +4,7 @@ async function postData(url = '', data = {}) {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams(data).toString()
+        body: new URLSearchParams({ json: JSON.stringify(data) }).toString()
     });
     if (!response.ok) {
         console.error(`HTTP error! status: ${response.status}`);
@@ -22,7 +22,7 @@ function updategame(output,mapsize,radius,opentab){
 	drawviscreatures(output.creatures,output.stats.position,offset,mapsize,radius);
 	drawplayer(radius*tilesize,radius*tilesize,output.stats.equipment,mapsize,radius);
 	if (output.mapRefresh) {
-		postData("/api",{command:"info", modifier:"minimap"}).then(data => { // Changed URL and payload
+		postData("/api", {command:"info", modifier:"minimap"}).then(data => { // Changed URL and payload
 			if (data === null) return;
 			var mapctx = document.getElementById("controls").getContext("2d");
 			mapctx.fillStyle = "#000000";

@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	        headers: {
 	            'Content-Type': 'application/x-www-form-urlencoded',
 	        },
-	        body: new URLSearchParams(data).toString()
+	        body: new URLSearchParams({ json: JSON.stringify(data) }).toString()
 	    });
 	    if (!response.ok) {
 	        console.error(`HTTP error! status: ${response.status}`);
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.font = "12px";
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
-			postData("/api",lastinput).then(data => { // Changed URL to /api
+			postData("/api", lastinput).then(data => { // Changed URL to /api
 				if (data === null) return; // Error handled in postData
 				var output=parsedata(data);
 				lastoutputs=refreshgame(output,outputs,lastinput);
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				ctx.font = "12px";
 				ctx.fillStyle = "#C0C0C0";
 				ctx.fillText("Waiting for server",0,10);
-				postData("/api",move).then(data => { // Changed URL to /api
+				postData("/api", move).then(data => { // Changed URL to /api
 					if (data === null) return;
 					var output=parsedata(data);
 					lastoutputs=refreshgame(output,lastoutputs,move);
@@ -147,13 +147,13 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
 			if (event.shiftKey){
-				postData("/api",{command:"cast",modifier:JSON.stringify(input)}).then(data => { // Changed URL to /api
+				postData("/api", {command:"cast",modifier:JSON.stringify(input)}).then(data => { // Changed URL to /api
 					if (data === null) return;
 					var outputs=parsedata(data);
 					lastoutputs=refreshgame(outputs,lastoutputs);
 				}).catch(error => console.error('Fetch error:', error));
 			} else {
-				postData("/api",{command:"moveto",modifier:JSON.stringify(input)}).then(data => { // Changed URL to /api
+				postData("/api", {command:"moveto",modifier:JSON.stringify(input)}).then(data => { // Changed URL to /api
 					if (data === null) return;
 					var outputs=parsedata(data);
 					lastoutputs=refreshgame(outputs,lastoutputs,{command:"moveto",modifier:JSON.stringify(input)});
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.font = "12px";
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
-			postData("/api",{command:"start", modifier:"Player"}).then(data => { // Changed URL to /api and added command/modifier
+			postData("/api", {command:"start", modifier:"Player"}).then(data => { // Changed URL to /api and added command/modifier
 				if (data === null) return;
 				//document.getElementById("player").src = "getplayerimg?tilesize=108"; // If we were to uncomment this
 				var outputs=parsedata(data);
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					ctx.fillStyle = "#C0C0C0";
 					ctx.fillText("Waiting for server",0,10);
 					var move = {command:"moveto",modifier:JSON.stringify(input)};
-					postData("/api",move).then(data => { // Changed URL to /api
+					postData("/api", move).then(data => { // Changed URL to /api
 						if (data === null) return;
 						var outputs=parsedata(data);
 						lastoutputs=refreshgame(outputs,lastoutputs,move);
@@ -306,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
 							var move = {command:"moveto",modifier:JSON.stringify(input)};
-							postData("/api",move).then(data => { // Changed URL to /api
+							postData("/api", move).then(data => { // Changed URL to /api
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs,move);
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api",{command:"moveto",modifier:JSON.stringify(input)}).then(data => { // Changed URL to /api
+							postData("/api", {command:"moveto",modifier:JSON.stringify(input)}).then(data => { // Changed URL to /api
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
@@ -340,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api",{command:input,modifier:100}).then(data => { // Changed URL to /api
+							postData("/api", {command:input,modifier:100}).then(data => { // Changed URL to /api
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api",{command:"cast",modifier:JSON.stringify(input)}).then(data => { // Changed URL to /api
+							postData("/api", {command:"cast",modifier:JSON.stringify(input)}).then(data => { // Changed URL to /api
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
@@ -422,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api",{command:input,modifier:itemchoice}).then(data => { // Changed URL to /api
+							postData("/api", {command:input,modifier:itemchoice}).then(data => { // Changed URL to /api
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api",{command:input,modifier:false}).then(data => { // Changed URL to /api
+							postData("/api", {command:input,modifier:false}).then(data => { // Changed URL to /api
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
