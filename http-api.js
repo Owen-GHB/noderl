@@ -62,12 +62,16 @@ router.all('/api', async (req, res) => {
   // Generic modifier parsing for other commands
   if (typeof modifier === 'string') {
     try {
+      // Attempt to parse the modifier if it's a string.
+      // This handles cases where the client might have stringified a primitive
+      // (e.g., sending "true" instead of true, or "\"explore\"" instead of "explore")
+      // or a JSON object/array.
       const parsedModifier = JSON.parse(modifier);
-      if (modifier.trim().startsWith('{') || modifier.trim().startsWith('[')) {
-        modifier = parsedModifier;
-      }
+      modifier = parsedModifier; // Always assign if parse is successful
     } catch (e) {
-      // Modifier is not a JSON string, keep it as is
+      // If JSON.parse fails, it means the string was not valid JSON.
+      // In this case, we assume it's a literal string modifier (e.g., "weapon", "Player")
+      // and keep it as is.
     }
   }
 
