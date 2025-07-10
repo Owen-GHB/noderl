@@ -1,9 +1,10 @@
 // Import required modules and dependencies
-const express = require('express');
-const router = express.Router();
+const path = require('path');
+const { initGameState, makeLevels } = require('./levelgen.js');
+const { createCanvas, loadImage } = require('canvas');
 const { Terrain } = require('./mapclass.js');
 const { Dungeon } = require('./dungeon.js');
-const { saveGame, loadGame } = require('./savefile.js');
+const { saveGame, loadGame, savefileExists } = require('./savefile.js');
 
 function processCommand(command, modifier, gameState) {
   gameState.globals = {
@@ -54,11 +55,12 @@ function processCommand(command, modifier, gameState) {
   return {gameState, dungeon};
 }
 
-function processWithSavefile(command, commandModifier, filename) {
+function processWithSavefile(command, modifier, filename) {
+  
   let gameState = {};
   let dungeon;
   gameState = loadGame(filename);
-  ({gameState, dungeon} = processCommand(command, commandModifier, gameState));
+  ({gameState, dungeon} = processCommand(command, modifier, gameState));
 
   // Save game state to file
   try {
@@ -70,6 +72,97 @@ function processWithSavefile(command, commandModifier, filename) {
   return {gameState, dungeon};
 }
 
+function returnMinimap(filename) {
+      let gameState = loadGame(filename);
+      const boardSize = { x: 60, y: 60 };
+      const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
+      let dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
+      // Save game state (as in original) - consider if this is necessary for 'info'
+      try {
+        saveGame(filename, gameState);
+      } catch (err) {
+        console.error('Error saving game state for minimap:', err);
+      }
+      return dungeon.getMinimap();
+}
+
+function startFromSavefile(filename) {
+  const boardSize = { x: 60, y: 60 };
+  let dungeon;
+  let gameState = {};
+
+  if (savefileExists(filename)) {
+    gameState = loadGame(filename);
+    gameState.globals = {
+      automove: false,
+      animations: [],
+      eventLog: [],
+      mapRefresh: true
+    };
+    if (gameState.creatures[gameState.currentFloor][0].hp <= 0) {
+      ({ gameState: gameState, dungeon: dungeon } = makeLevels(gameState));
+    }
+  } else {
+    gameState = initGameState();
+    ({ gameState: gameState, dungeon: dungeon } = makeLevels(gameState));
+  }
+
+  try {
+    saveGame(filename, gameState);
+  } catch (err) {
+    console.error('Error saving game state for start:', err);
+  }
+
+  if (typeof dungeon === 'undefined') {
+    const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
+    dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
+  }
+  let outputs = dungeon.getOutputs(gameState.globals);
+  outputs.mapRefresh = gameState.globals.mapRefresh;
+  return outputs;
+}
+
+async function getImageBuffer(modifier) {
+  let tilesize, imageof;
+  try {
+    const imageParams = JSON.parse(modifier);
+    tilesize = parseInt(imageParams.tilesize, 10);
+    imageof = imageParams.imageof;
+    if (isNaN(tilesize) || typeof imageof !== 'string') {
+      throw new Error("Invalid parameters for image command");
+    }
+  } catch (e) {
+    throw new Error("Invalid or missing JSON modifier for image command. Expected { \"tilesize\": <int>, \"imageof\": \"<string>\" }");
+  }
+
+  const canvas = createCanvas(tilesize, tilesize);
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, tilesize, tilesize);
+
+  if (imageof !== 'none') {
+    try {
+        const original = await loadImage(path.join(__dirname, `static/tiles/${imageof}.png`));
+        ctx.drawImage(original, 0, 0, tilesize, tilesize);
+    } catch (imgError) {
+        console.error(`Error loading image ${imageof}:`, imgError);
+        // Optionally send a default image or error image
+        ctx.fillStyle = "#FF0000"; // Red for error
+        ctx.fillRect(0, 0, tilesize, tilesize);
+    }
+  } else {
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, tilesize, tilesize);
+  }
+
+  const imageData = canvas.toDataURL('image/png');
+  const base64Data = imageData.replace(/^data:image\/png;base64,/, '');
+  const buffer = Buffer.from(base64Data, 'base64');
+  return buffer;
+}
+
 module.exports = {
-  processWithSavefile
+  processWithSavefile,
+  returnMinimap,
+  getImageBuffer,
+  startFromSavefile
 };
