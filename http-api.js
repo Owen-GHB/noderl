@@ -12,13 +12,17 @@ router.all('/api', async (req, res) => {
     if (req.body.json) {
       data = JSON.parse(req.body.json);
     } else {
-      return res.status(400).json({ error: "JSON data not provided in POST request" });
+      // Fallback for non-JSON requests or direct calls if any
+      ({ command, modifier } = req.body);
+      data = { command, modifier };
     }
   } else if (req.method === 'GET') {
     if (req.query.json) {
       data = JSON.parse(req.query.json);
     } else {
-      return res.status(400).json({ error: "JSON data not provided in GET request" });
+      // Fallback for non-JSON requests or direct calls if any
+      ({ command, modifier } = req.query);
+      data = { command, modifier };
     }
   } else {
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -27,7 +31,23 @@ router.all('/api', async (req, res) => {
   ({ command, modifier } = data);
 
   if (typeof command === 'undefined') {
-    return res.status(400).json({ error: "Command not provided in JSON data" });
+    return res.status(400).json({ error: "Command not provided" });
+  }
+
+  // If modifier is a string that looks like JSON, parse it.
+  if (typeof modifier === 'string') {
+    try {
+      // Attempt to parse modifier if it's a JSON string
+      // This handles cases where modifier was an object stringified on the client
+      const parsedModifier = JSON.parse(modifier);
+      // Check if it was actually JSON (e.g. starts with { or [)
+      // and not just a simple string like "Player" or "minimap"
+      if (modifier.trim().startsWith('{') || modifier.trim().startsWith('[')) {
+        modifier = parsedModifier;
+      }
+    } catch (e) {
+      // Modifier is not a JSON string, keep it as is
+    }
   }
 
   switch (command) {
