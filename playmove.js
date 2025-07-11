@@ -140,12 +140,9 @@ async function getImageBuffer(modifier) {
   return buffer;
 }
 
-async function processCommand(command, modifier, filename) {
+function processCommand(command, modifier, filename) {
   try {
     switch (command) {
-      case 'image':
-        const buffer = await getImageBuffer(modifier);
-        return { buffer, contentType: 'image/png' };
 
       case 'info':
         if (modifier === 'minimap') {
@@ -178,7 +175,7 @@ async function processCommand(command, modifier, filename) {
   }
 }
 
-async function processJSONInput(jsonString) {
+function processJSONInput(jsonString) {
   let data;
 
   try {
@@ -193,7 +190,7 @@ async function processJSONInput(jsonString) {
     return { error: "Missing 'command' in request data"};
   }
 
-  return await processCommand(command, modifier, filename);
+  return processCommand(command, modifier, filename);
 }
 
 module.exports = {

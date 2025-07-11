@@ -13,7 +13,7 @@ router.all('/', async (req, res) => {
     if (typeof jsonString === 'undefined') {
       return res.status(400).json({ error: "Missing 'json' parameter" });
     }
-    const result = await processJSONInput(jsonString);
+    const result = processJSONInput(jsonString);
 
     if (result.error) {
       return res.status(400).json({
