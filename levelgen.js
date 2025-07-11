@@ -1,10 +1,7 @@
 // Import required modules and dependencies
-const express = require('express');
-const router = express.Router();
 const { Terrain, DungeonSpace } = require('./mapclass.js');
 const { Dungeon } = require('./dungeon.js');
 const fs = require('fs');
-const { saveGame, loadGame, savefileExists } = require('./savefile.js');
 
 function buildRandomPath(toFill, sectorSpace) {
   let step = 0;

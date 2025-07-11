@@ -1,21 +1,48 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
-const apiRouter = require('./http-api');
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const handleApiRequest = require('./http-api');
 
-// Parse JSON bodies
-app.use(bodyParser.json());
+const PORT = 8000;
+const STATIC_DIR = path.join(__dirname, 'static');
 
-// Parse URL-encoded bodies
-app.use(bodyParser.urlencoded({ extended: true }));
+const server = http.createServer((req, res) => {
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  const pathname = url.pathname;
 
-// Use the API router for all API endpoints
-app.use('/api', apiRouter);
+  if (pathname === '/api') {
+    return handleApiRequest(req, res);
+  }
 
-// Serve static files from the /static directory
-app.use('/', express.static(__dirname + '/static'));
+  // === Static file serving ===
+  const filePath = path.join(STATIC_DIR, pathname === '/' ? '/index.html' : pathname);
 
-// Start the Express server
-app.listen(8000, () => {
-  console.log('Express server is running on port 8000');
+  if (!filePath.startsWith(STATIC_DIR)) {
+    res.writeHead(403, { 'Content-Type': 'text/plain' });
+    return res.end('Forbidden');
+  }
+
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.writeHead(err.code === 'ENOENT' ? 404 : 500, { 'Content-Type': 'text/plain' });
+      res.end(err.code === 'ENOENT' ? 'Not Found' : 'Internal Server Error');
+    } else {
+      const ext = path.extname(filePath).toLowerCase();
+      const contentTypes = {
+        '.html': 'text/html',
+        '.js': 'application/javascript',
+        '.css': 'text/css',
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.json': 'application/json'
+      };
+      const contentType = contentTypes[ext] || 'application/octet-stream';
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(data);
+    }
+  });
+});
+
+server.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });

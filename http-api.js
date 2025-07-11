@@ -1,44 +1,83 @@
-const express = require('express');
-const router = express.Router();
-const {
-  processJSONInput
-} = require('./playmove.js');
+const { URL } = require('url');
+const { processJSONInput } = require('./playmove.js');
 
-router.all('/', async (req, res) => {
+async function handleApiRequest(req, res) {
   try {
-    const jsonString =
-      req.method === 'POST' ? req.body?.json :
-      req.method === 'GET' ? req.query?.json : undefined;
+    const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
+    let jsonString;
 
-    if (typeof jsonString === 'undefined') {
-      return res.status(400).json({ error: "Missing 'json' parameter" });
+    if (req.method === 'GET') {
+      jsonString = parsedUrl.searchParams.get('json');
+      return respond(jsonString, res);
     }
-    const result = processJSONInput(jsonString);
 
-    if (result.error) {
-      return res.status(400).json({
-        error: result.error,
-        ...(result.details && { details: result.details })
+    if (req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => body += chunk);
+      req.on('end', () => {
+        try {
+          const contentType = req.headers['content-type'] || '';
+          if (contentType.includes('application/x-www-form-urlencoded')) {
+            const params = new URLSearchParams(body);
+            jsonString = params.get('json');
+          } else if (contentType.includes('application/json')) {
+            const json = JSON.parse(body);
+            jsonString = json?.json;
+          }
+
+          respond(jsonString, res);
+        } catch (err) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Invalid POST body', details: err.message }));
+        }
       });
+      return;
     }
 
-    if (result.buffer) {
-      res.writeHead(200, {
-        'Content-Type': result.contentType,
-        'Content-Length': result.buffer.length
-      });
-      return res.end(result.buffer);
-    }
-
-    if (result.json) {
-      return res.json(result.json);
-    }
-
-    return res.status(500).json({ error: "Unknown result from command handler" });
+    res.writeHead(405, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Method not allowed' }));
   } catch (err) {
     console.error("Unhandled API error:", err);
-    return res.status(500).json({ error: "Internal server error", details: err.message });
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: "Internal server error", details: err.message }));
   }
-});
+}
 
-module.exports = router;
+function respond(jsonString, res) {
+  if (typeof jsonString === 'undefined') {
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: "Missing 'json' parameter" }));
+    return;
+  }
+
+  const result = processJSONInput(jsonString);
+
+  if (result.error) {
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      error: result.error,
+      ...(result.details && { details: result.details })
+    }));
+    return;
+  }
+
+  if (result.buffer) {
+    res.writeHead(200, {
+      'Content-Type': result.contentType,
+      'Content-Length': result.buffer.length
+    });
+    res.end(result.buffer);
+    return;
+  }
+
+  if (result.json) {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(result.json));
+    return;
+  }
+
+  res.writeHead(500, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ error: "Unknown result from command handler" }));
+}
+
+module.exports = handleApiRequest;
