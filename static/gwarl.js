@@ -5,27 +5,10 @@ document.addEventListener('DOMContentLoaded', function(){
 	var mapsize=612;
 	var radius=8;
 	var tilesize=Math.floor(mapsize/(2*radius+1));
-	var playerpos;
 	var input;
 	var lastoutputs;
-	var newtiles=false;
 	var casting=false;
 	var opentab="items";
-
-	async function postData(url = '', data = {}) {
-	    const response = await fetch(url, {
-	        method: 'POST',
-	        headers: {
-	            'Content-Type': 'application/x-www-form-urlencoded',
-	        },
-	        body: new URLSearchParams({ json: JSON.stringify(data) }).toString()
-	    });
-	    if (!response.ok) {
-	        console.error(`HTTP error! status: ${response.status}`);
-	        return null;
-	    }
-	    return response.text();
-	}
 
 	function refreshgame(outputs,lastoutput,lastinput){
 		//main update sequence called from animate

@@ -1,18 +1,3 @@
-async function postData(url = '', data = {}) {
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({ json: JSON.stringify(data) }).toString()
-    });
-    if (!response.ok) {
-        console.error(`HTTP error! status: ${response.status}`);
-        return null;
-    }
-    return response.text();
-}
-
 function updategame(output,mapsize,radius,opentab){
 	var offset = {x:0, y:0};
 	var tilesize=Math.floor(mapsize/(2*radius+1));

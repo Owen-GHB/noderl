@@ -1,3 +1,17 @@
+async function postData(url = '', data = {}) {
+	const response = await fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+		},
+		body: new URLSearchParams({ json: JSON.stringify(data) }).toString()
+	});
+	if (!response.ok) {
+		console.error(`HTTP error! status: ${response.status}`);
+		return null;
+	}
+	return response.text();
+}
 function getmousesquare(mousex,mousey,tilesize){
 	squarex=(mousex-(mousex%tilesize))/tilesize;
 	squarey=(mousey-(mousey%tilesize))/tilesize;
@@ -112,7 +126,7 @@ function parsedata(thisdata){
 	}
 	return outputs;
 }
-function playmove(com,mod){
+function playmove(command,modifier){
 	
 }
 function drawUIskin(opentab){ 
@@ -153,6 +167,5 @@ function drawUIskin(opentab){
 	ctx.drawImage(img,0,400,62,38);
 	
 	img = document.getElementById("uistats");
-	ctx.drawImage(img,180,64,208,84);
-		
+	ctx.drawImage(img,180,64,208,84);	
 }

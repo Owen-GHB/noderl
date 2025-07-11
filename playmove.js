@@ -6,7 +6,7 @@ const { Terrain } = require('./mapclass.js');
 const { Dungeon } = require('./dungeon.js');
 const { saveGame, loadGame, savefileExists } = require('./savefile.js');
 
-function processCommand(command, modifier, gameState) {
+function processDungeon(command, modifier, gameState) {
   gameState.globals = {
 	  automove:false,
 	  animations:[],
@@ -60,7 +60,7 @@ function processWithSavefile(command, modifier, filename) {
   let gameState = {};
   let dungeon;
   gameState = loadGame(filename);
-  ({gameState, dungeon} = processCommand(command, modifier, gameState));
+  ({gameState, dungeon} = processDungeon(command, modifier, gameState));
 
   // Save game state to file
   try {
@@ -77,12 +77,6 @@ function returnMinimap(filename) {
       const boardSize = { x: 60, y: 60 };
       const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
       let dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
-      // Save game state (as in original) - consider if this is necessary for 'info'
-      try {
-        saveGame(filename, gameState);
-      } catch (err) {
-        console.error('Error saving game state for minimap:', err);
-      }
       return dungeon.getMinimap();
 }
 
@@ -146,9 +140,64 @@ async function getImageBuffer(modifier) {
   return buffer;
 }
 
+async function processCommand(command, modifier, filename) {
+  try {
+    switch (command) {
+      case 'image':
+        const buffer = await getImageBuffer(modifier);
+        return { buffer, contentType: 'image/png' };
+
+      case 'info':
+        if (modifier === 'minimap') {
+          const minimap = returnMinimap(filename);
+          return { json: minimap };
+        } else {
+          return { error: `Invalid modifier for 'info' command: ${modifier}`, status: 400 };
+        }
+
+      case 'start':
+        const outputs = startFromSavefile(modifier);
+        return { json: outputs };
+
+      default:
+        if (typeof modifier === 'undefined') {
+          return { error: `Missing 'modifier' for command: ${command}`, status: 400 };
+        }
+        const { gameState, dungeon } = processWithSavefile(command, modifier, filename);
+        const output = dungeon.getOutputs(gameState.globals);
+        output.mapRefresh = gameState.globals.mapRefresh;
+        return { json: output };
+    }
+  } catch (err) {
+    console.error(`Error handling command '${command}':`, err);
+    return {
+      error: `Failed to process command '${command}'`,
+      details: err.message,
+      status: 400
+    };
+  }
+}
+
+async function processJSONInput(jsonString) {
+  let data;
+
+  try {
+    data = JSON.parse(jsonString);
+  } catch (err) {
+    return { error: "Invalid JSON format"};
+  }
+
+  const { command, modifier } = data;
+
+  if (!command) {
+    return { error: "Missing 'command' in request data"};
+  }
+
+  const filename = 'Player';
+
+  return await processCommand(command, modifier, filename);
+}
+
 module.exports = {
-  processWithSavefile,
-  returnMinimap,
-  getImageBuffer,
-  startFromSavefile
+  processJSONInput
 };
