@@ -485,7 +485,7 @@ export function animationcycle(output,lastoutput,ctx,mapsize,radius,opentab){
 		}
 		return output;
 	}
-	gameState.waiting=false;
+	globalState.waiting=false;
 	if (output.animations){
 		done=animate(animations,done);
 	} else {

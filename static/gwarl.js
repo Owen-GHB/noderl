@@ -2,11 +2,11 @@ import { runCommand, getsquarecontents, getnexttarget, parsedata, drawUIskin } f
 import { updategame, animationcycle } from './animation.js';
 import { drawportrait } from './draw.js';
 
-export const gameState = {
+export const globalState = {
 	waiting: false
 };
 var showanimations=true; // Assuming these are still module-level globals for now, not shared.
-var interrupt=false;   // Or if they need sharing, they'd also go into gameState.
+var interrupt=false;   // Or if they need sharing, they'd also go into globalState.
 
 document.addEventListener('DOMContentLoaded', function(){
 	var mapsize=612;
