@@ -85,7 +85,7 @@ router.all('/api', async (req, res) => {
 
     if (result.buffer) {
       res.writeHead(200, {
-        'Content-Type': result.contentType || 'application/octet-stream',
+        'Content-Type': result.contentType,
         'Content-Length': result.buffer.length
       });
       return res.end(result.buffer);
