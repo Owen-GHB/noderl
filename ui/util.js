@@ -13,8 +13,20 @@ async function postData(data = {}) {
 	}
 	return response.text();
 }
-export function runCommand(command,modifier){
-	return postData({ command: command, modifier: modifier, filename: 'Player' });
+export function runCommand(command, modifier) {
+  const filename = 'Player';
+
+  if (window.api?.processCommand) {
+    // Running in Electron with context bridge available
+    try {
+      return window.api.processCommand(command, modifier, filename);
+    } catch (err) {
+      return { error: 'Electron context bridge call failed', details: err.message };
+    }
+  } else {
+    // Fallback for browser/HTTP version
+    return postData({ command, modifier, filename });
+  }
 }
 function getmousesquare(mousex,mousey,tilesize){
 	let squarex=(mousex-(mousex%tilesize))/tilesize;
