@@ -1,6 +1,13 @@
-var waiting=false;
-var showanimations=true;
-var interrupt=false;
+import { runCommand, getsquarecontents, getnexttarget, parsedata, drawUIskin } from './util.js';
+import { updategame, animationcycle } from './animation.js';
+import { drawportrait } from './draw.js';
+
+export const gameState = {
+	waiting: false
+};
+var showanimations=true; // Assuming these are still module-level globals for now, not shared.
+var interrupt=false;   // Or if they need sharing, they'd also go into gameState.
+
 document.addEventListener('DOMContentLoaded', function(){
 	var mapsize=612;
 	var radius=8;
@@ -28,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	}
 	document.addEventListener('keydown',function(e){
 		e.preventDefault();
-		if (!waiting){
+		if (!gameState.waiting){
 			var keycode = e.which;        
 			var move=false;
 			switch (keycode) {
@@ -71,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					break;
 				case 70:
 					if (!lastoutputs || !lastoutputs.creatures) return; // Guard clause
-					var target=getnexttarget(lastoutputs.creatures,radius);
+					let target=getnexttarget(lastoutputs.creatures,radius);
 					if (target!=false) {
 						move={command:"moveto",modifier:target};
 					} else {
@@ -81,11 +88,11 @@ document.addEventListener('DOMContentLoaded', function(){
 					break;
 				case 71:
 						move={command:"pickup",modifier:0};
-				case 67:
+				case 67: // Cast spell
 					if (!lastoutputs || !lastoutputs.creatures) return; // Guard clause
-					var target=getnexttarget(lastoutputs.creatures,radius);
-					if (target!=false) {
-						input={"spell":casting,"x":target.x,"y":target.y};
+					let target_cast=getnexttarget(lastoutputs.creatures,radius); // Renamed to avoid conflict if G key isn't pressed
+					if (target_cast!=false) {
+						input={"spell":casting,"x":target_cast.x,"y":target_cast.y};
 						move={command:"cast",modifier:input};
 					} else {
 						lastoutputs.movelog=[];
@@ -96,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					break;
 			}
 			if (move!=false) {
-				waiting=true;
+				gameState.waiting=true;
 				var ctx = document.getElementById("map").getContext("2d");
 				ctx.font = "12px";
 				ctx.fillStyle = "#C0C0C0";
@@ -114,8 +121,8 @@ document.addEventListener('DOMContentLoaded', function(){
 		if (!lastoutputs || !lastoutputs.stats || !lastoutputs.stats.position) return; // Guard clause
 		var mousex=event.clientX-this.offsetLeft;
 		var mousey=event.clientY-this.offsetTop;
-		inputx=(mousex-(mousex%tilesize))/tilesize;
-		inputy=(mousey-(mousey%tilesize))/tilesize;
+		let inputx=(mousex-(mousex%tilesize))/tilesize;
+		let inputy=(mousey-(mousey%tilesize))/tilesize;
 		inputx+=lastoutputs.stats.position.x-radius;
 		inputy+=lastoutputs.stats.position.y-radius;
 		if (event.shiftKey){
@@ -123,8 +130,8 @@ document.addEventListener('DOMContentLoaded', function(){
 		} else {
 			input={"x":inputx,"y":inputy};
 		}
-		if (!waiting) {
-			waiting=true;
+		if (!gameState.waiting) {
+			gameState.waiting=true;
 			var ctx = document.getElementById("map").getContext("2d");
 			ctx.font = "12px";
 			ctx.fillStyle = "#C0C0C0";
@@ -165,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		var ctx=document.getElementById("controls").getContext("2d");
 		var infimg=document.getElementById("none144");
 		ctx.drawImage(infimg,0,180);
-		for (thing in focus){
+		for (const thing in focus){
 			if (thing==2&&focus[thing]!=false) thingtype=focus[thing];
 			if (thing==3&&focus[thing]!=false) thingtype="creature";
 		}
@@ -182,8 +189,8 @@ document.addEventListener('DOMContentLoaded', function(){
 	document.getElementById("newlevel").addEventListener('click', function(){
 		document.getElementById("menu").style.display = "none";
 		document.getElementById("map").style.display = "block";
-		if (!waiting) {
-			waiting=true;
+		if (!gameState.waiting) {
+			gameState.waiting=true;
 			var ctx = document.getElementById("map").getContext("2d");
 			ctx.font = "12px";
 			ctx.fillStyle = "#C0C0C0";
@@ -207,6 +214,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			if (mousex>62&&mousey>324){
 				if (opentab=="items"){
 					if (mousex>136){
+						let itemchoice;
 						if (mousey<372){
 							itemchoice=Math.floor((mousex-136)/36);
 							if (lastoutputs.stats.equipment[itemchoice]){
@@ -255,11 +263,11 @@ document.addEventListener('DOMContentLoaded', function(){
 		var fback;
 		if (mousey<180) {
 			if (mousex<180){
-				inputx=(mousex-(mousex%3))/3;
-				inputy=(mousey-(mousey%3))/3;
+				let inputx=(mousex-(mousex%3))/3;
+				let inputy=(mousey-(mousey%3))/3;
 				input={"x":inputx,"y":inputy};
-				if (!waiting) {
-					waiting=true;
+				if (!gameState.waiting) {
+					gameState.waiting=true;
 					var ctx = document.getElementById("map").getContext("2d");
 					ctx.font = "12px";
 					ctx.fillStyle = "#C0C0C0";
@@ -280,9 +288,9 @@ document.addEventListener('DOMContentLoaded', function(){
 				} else {
 					if (mousex<232){
 						fback="explore";
-						if (!waiting) {
+						if (!gameState.waiting) {
 							input="explore";
-							waiting=true;
+							gameState.waiting=true;
 							var ctx = document.getElementById("map").getContext("2d");
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
@@ -296,10 +304,10 @@ document.addEventListener('DOMContentLoaded', function(){
 						}
 					} else if (mousex<284){
 						fback="fight";
-						var target=getnexttarget(lastoutputs.creatures,radius);
-						if (!waiting&&target!=false) {
+						let target=getnexttarget(lastoutputs.creatures,radius);
+						if (!gameState.waiting&&target!=false) {
 							input=target;
-							waiting=true;
+							gameState.waiting=true;
 							var ctx = document.getElementById("map").getContext("2d");
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
@@ -316,8 +324,8 @@ document.addEventListener('DOMContentLoaded', function(){
 					} else if (mousex<336){
 						fback="rest";
 						input = "wait";
-						if (!waiting) {
-							waiting=true;
+						if (!gameState.waiting) {
+							gameState.waiting=true;
 							var ctx = document.getElementById("map").getContext("2d");
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
@@ -330,10 +338,10 @@ document.addEventListener('DOMContentLoaded', function(){
 						}
 					} else {
 						fback="cast";
-						var target=getnexttarget(lastoutputs.creatures,radius);
-						if (!waiting&&target!=false) {
+						let target=getnexttarget(lastoutputs.creatures,radius);
+						if (!gameState.waiting&&target!=false) {
 							input={"spell":casting,"x":target.x,"y":target.y};
-							waiting=true;
+							gameState.waiting=true;
 							var ctx = document.getElementById("map").getContext("2d");
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
@@ -398,8 +406,8 @@ document.addEventListener('DOMContentLoaded', function(){
 							itemchoice=Math.floor((mousex-136)/36);
 							fback="ground "+itemchoice;
 						}
-						if (!waiting) {
-							waiting=true;
+						if (!gameState.waiting) {
+							gameState.waiting=true;
 							var ctx = document.getElementById("map").getContext("2d");
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
@@ -414,8 +422,8 @@ document.addEventListener('DOMContentLoaded', function(){
 				} else if (opentab=="options"){
 					if (mousex<190&&mousey<386){
 						var input = "suicide";
-						if (!waiting) {
-							waiting=true;
+						if (!gameState.waiting) {
+							gameState.waiting=true;
 							var ctx = document.getElementById("map").getContext("2d");
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";

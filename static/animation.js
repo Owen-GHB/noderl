@@ -1,4 +1,17 @@
-function updategame(output,mapsize,radius,opentab){
+import { runCommand, getcreatureatsquare, drawUIskin } from './util.js';
+import {
+    drawtominimap,
+    drawvisthings,
+    drawviscreatures,
+    drawplayer,
+    drawcreature,
+    drawvisterrain,
+    shadeoutside,
+    drawanimationbox
+} from './draw.js';
+import { gameState } from './gwarl.js';
+
+export function updategame(output,mapsize,radius,opentab){
 	var offset = {x:0, y:0};
 	var tilesize=Math.floor(mapsize/(2*radius+1));
 	drawvisterrain(output.explored,output.decals,offset,mapsize,radius);
@@ -12,12 +25,12 @@ function updategame(output,mapsize,radius,opentab){
 			var mapctx = document.getElementById("controls").getContext("2d");
 			mapctx.fillStyle = "#000000";
 			mapctx.fillRect(0,0,180,180);
-			mapinfo=data.split("L");
-			for (i in mapinfo) {
+			let mapinfo=data.split("L");
+			for (let i in mapinfo) {
 				mapinfo[i]=mapinfo[i].split("");
 			}
-			for (i=0;i<60;i++){
-				for (j=0;j<60;j++){
+			for (let i=0;i<60;i++){
+				for (let j=0;j<60;j++){
 					var tile=mapinfo[i][j];
 					switch (tile){
 					case "0":
@@ -64,7 +77,7 @@ function updategame(output,mapsize,radius,opentab){
 	
 	if (opentab=="items"){
 		var newimg;
-		for (item=0;item<14;item++){
+		for (let item=0;item<14;item++){
 			if (typeof output.stats.inventory[item]!='undefined'){
 				var itemtype=output.stats.inventory[item].type;
 				newimg = document.getElementById(itemtype);
@@ -73,7 +86,7 @@ function updategame(output,mapsize,radius,opentab){
 				}
 			}
 		}
-		for (item=0;item<7;item++){
+		for (let item=0;item<7;item++){
 			if (output.stats.equipment[item]){
 				var itemtype=output.stats.equipment[item].type;
 				newimg = document.getElementById(itemtype);
@@ -82,7 +95,7 @@ function updategame(output,mapsize,radius,opentab){
 				}
 			}
 		}
-		if (typeof output.stats.onground!='undefined') for (item=0;item<7;item++){
+		if (typeof output.stats.onground!='undefined') for (let item=0;item<7;item++){
 			if (typeof output.stats.onground[item]!='undefined'){
 				var itemtype=output.stats.onground[item].itemclass;
 				if (itemtype=="corpse") {
@@ -99,20 +112,20 @@ function updategame(output,mapsize,radius,opentab){
 	}
 	
 	// function for later implementation of spellcasting ui tab 
-	for (spell=0;spell<7;spell++){
+	for (let spell=0;spell<7;spell++){
 		if (typeof output.stats.repetoire[spell]!='undefined'){
 			var spelltype=output.stats.repetoire[spell].school;
 		}
 	}
 	
-	for (move in output.movelog){
+	for (const move in output.movelog){
 		document.getElementById("movelog").insertAdjacentHTML("afterbegin", output.movelog[move]+"<br/>");
 		document.getElementById("movelog").scrollTop = 0;
 	}
 	return output;
 }
 
-function animationcycle(output,lastoutput,ctx,mapsize,radius,opentab){
+export function animationcycle(output,lastoutput,ctx,mapsize,radius,opentab){
 	var animations=output.animations;
 	var tilesize=Math.floor(mapsize/(2*radius+1));
 	var timer=0;
@@ -174,7 +187,7 @@ function animationcycle(output,lastoutput,ctx,mapsize,radius,opentab){
 		var playerthings = [];
 		var notplayerthings = [];
 		if (lastoutput.creatures.length>1){
-			for (i in lastoutput.creatures){
+			for (const i in lastoutput.creatures){
 				if (i>0) notplayerthings[i-1]=lastoutput.creatures[i];
 			}
 		}
@@ -381,7 +394,7 @@ function animationcycle(output,lastoutput,ctx,mapsize,radius,opentab){
 		var screeny=(destination.y)*tilesize;
 		if (timer>0){
 			ctx.beginPath();
-			for (kink=0;kink<15;kink++){
+			for (let kink=0;kink<15;kink++){
 				var fromx=origin.x*tilesize+(2*tilesize/10)+kink*(screenx+tilesize/2-origin.x*tilesize-(2*tilesize/10))/15+oldwobblex[kink];
 				var fromy=origin.y*tilesize+(2*tilesize/10)+kink*(screeny+tilesize/2-origin.y*tilesize-(2*tilesize/10))/15+oldwobbley[kink];
 				var tox=origin.x*tilesize+(2*tilesize/10)+(kink+1)*(screenx+tilesize/2-origin.x*tilesize-(2*tilesize/10))/15+oldwobblex[kink+1];
@@ -397,18 +410,18 @@ function animationcycle(output,lastoutput,ctx,mapsize,radius,opentab){
 		var wobbley=[];
 		wobblex.push(0);
 		wobbley.push(0);
-		for (kink=0;kink<15;kink++){
+		for (let kink=0;kink<15;kink++){
 			wobblex.push(Math.floor((Math.random()-0.5)*tilesize/4)+wobblex[kink]);
 			wobbley.push(Math.floor((Math.random()-0.5)*tilesize/4)+wobbley[kink]);
 		}
 		var gradx=wobblex[15]/16;
 		var grady=wobbley[15]/16;
-		for (kink=0;kink<16;kink++){
+		for (let kink=0;kink<16;kink++){
 			wobblex[kink]-=kink*gradx;
 			wobbley[kink]-=kink*grady;
 		}
 		ctx.beginPath();
-		for (kink=0;kink<15;kink++){
+		for (let kink=0;kink<15;kink++){
 			var fromx=origin.x*tilesize+(2*tilesize/10)+kink*(screenx+tilesize/2-origin.x*tilesize-(2*tilesize/10))/15+wobblex[kink];
 			var fromy=origin.y*tilesize+(2*tilesize/10)+kink*(screeny+tilesize/2-origin.y*tilesize-(2*tilesize/10))/15+wobbley[kink];
 			var tox=origin.x*tilesize+(2*tilesize/10)+(kink+1)*(screenx+tilesize/2-origin.x*tilesize-(2*tilesize/10))/15+wobblex[kink+1];
@@ -472,7 +485,7 @@ function animationcycle(output,lastoutput,ctx,mapsize,radius,opentab){
 		}
 		return output;
 	}
-	waiting=false;
+	gameState.waiting=false;
 	if (output.animations){
 		done=animate(animations,done);
 	} else {
