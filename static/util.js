@@ -17,8 +17,8 @@ export function runCommand(command,modifier){
 	return postData({ command: command, modifier: modifier, filename: 'Player' });
 }
 function getmousesquare(mousex,mousey,tilesize){
-	squarex=(mousex-(mousex%tilesize))/tilesize;
-	squarey=(mousey-(mousey%tilesize))/tilesize;
+	let squarex=(mousex-(mousex%tilesize))/tilesize;
+	let squarey=(mousey-(mousey%tilesize))/tilesize;
 }
 export function getsquarecontents(terrain,decals,items,creatures,square,radius){
 	var playerx=creatures[0].position.x;
@@ -48,13 +48,13 @@ export function getsquarecontents(terrain,decals,items,creatures,square,radius){
 		localdecal ="decal"+localdecal;
 	}
 	var localitem = false;
-	for (item in items){
+	for (const item in items){
 		if (items[item].position.x-playerx+radius==square.x&&items[item].position.y-playery+radius==square.y) {
 			localitem=items[item].type;
 		}
 	}
 	var localcreature = false;
-	for (creature in creatures){
+	for (const creature in creatures){
 		if (creatures[creature].position.x-playerx+radius==square.x&&creatures[creature].position.y-playery+radius==square.y) {
 			localcreature=creatures[creature];
 		}
@@ -69,14 +69,14 @@ export function getsquarecontents(terrain,decals,items,creatures,square,radius){
 export function getcreatureatsquare(creatures,square,radius){
 	var playerx=false;
 	var playery=false;
-	for (creature in creatures){
+	for (const creature in creatures){
 		if (creatures[creature].type=="player"){
 			playerx=creatures[creature].position.x;
 			playery=creatures[creature].position.y;
 		}
 	}
 	var localcreature = false;
-	for (creature in creatures){
+	for (const creature in creatures){
 		if (creatures[creature].position.x-playerx+radius==square.x&&creatures[creature].position.y-playery+radius==square.y) {
 			localcreature=creatures[creature];
 		}
@@ -86,12 +86,12 @@ export function getcreatureatsquare(creatures,square,radius){
 export function getlocalimagestack(terrain,decals,items,creatures,square,radius){
 	var squarecontents=getsquarecontents(terrain,decals,items,creatures,square,radius);
 	var imgstack = [];
-	for (i=0;i<3;i++){
+	for (let i=0;i<3;i++){
 		imgstack.push(squarecontents[i]);
 	}
 	if (squarecontents[3]!=false){
 		imgstack.push(squarecontents[3].type);
-		for (piece in squarecontents[3].equipment){
+		for (const piece in squarecontents[3].equipment){
 			imgstack.push(squarecontents[3].equipment[piece]);
 		}
 	} else {
@@ -102,7 +102,7 @@ export function getlocalimagestack(terrain,decals,items,creatures,square,radius)
 export function getnexttarget(creatures,radius) {
 	var target=false;
 	var dist=2*radius;
-	for (creature in creatures){
+	for (const creature in creatures){
 		var dist2=Math.abs(creatures[creature].position.x-creatures[0].position.x)
 			+Math.abs(creatures[creature].position.y-creatures[0].position.y);
 		if (dist2<=dist&&dist2>0){
@@ -117,15 +117,15 @@ export function parsedata(thisdata){
 	var outputs=JSON.parse(thisdata);
 	//parse terrain/decals output
 	outputs.terrain=outputs.terrain.split("L");
-	for (i in outputs.terrain){
+	for (let i in outputs.terrain){
 		outputs.terrain[i]=outputs.terrain[i].split("");
 	}
 	outputs.explored=outputs.explored.split("L");
-	for (i in outputs.explored){
+	for (let i in outputs.explored){
 		outputs.explored[i]=outputs.explored[i].split("");
 	}
 	outputs.decals=outputs.decals.split("L");
-	for (i in outputs.decals){
+	for (let i in outputs.decals){
 		outputs.decals[i]=outputs.decals[i].split("");
 	}
 	return outputs;

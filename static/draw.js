@@ -9,9 +9,9 @@ export function drawtominimap(layer,centre) {
 	var yhigh=centre.y+radius;
 	var tilesize=3;
 	var ctx = document.getElementById("controls").getContext("2d");
-	for (i=0;i<19;i++){
+	for (let i=0;i<19;i++){
 		if (typeof layer[i]!='undefined'){
-			for (j=0;j<19;j++){
+			for (let j=0;j<19;j++){
 				if (typeof layer[i][j]!='undefined'){
 					var tile=layer[i][j];
 					switch (tile){
@@ -51,8 +51,8 @@ export function drawvisthings(things,centre,offset,mapsize,radius){
 	if (typeof offset!='undefined'){
 		ctx.translate(offset.x,offset.y);
 	}
-	for (i in things){
-		thing=things[i];
+	for (const i in things){
+		const thing=things[i];
 		var thingimg = document.getElementById(thing.type);
 		ctx.drawImage(thingimg,(thing.position.x-xlow)*tilesize,(thing.position.y-ylow)*tilesize,tilesize,tilesize);
 	}
@@ -70,8 +70,8 @@ export function drawviscreatures(things,centre,offset,mapsize,radius){
 	if (typeof offset!='undefined'){
 		ctx.translate(offset.x,offset.y);
 	}
-	for (i in things){
-		thing=things[i];
+	for (const i in things){
+		const thing=things[i];
 		if (thing.type!="player") {
 			drawcreature(thing.type,(thing.position.x-xlow)*tilesize,(thing.position.y-ylow)*tilesize,thing.equipment,mapsize,radius);
 		}
@@ -93,7 +93,7 @@ export function drawplayer(positionx,positiony,equipment,mapsize,radius) {
 	var ctx = document.getElementById("map").getContext("2d");
 	var playerimg = document.getElementById("player");
 	ctx.drawImage(playerimg,positionx,positiony,tilesize,tilesize);
-	for (item in equipment) {
+	for (const item in equipment) {
 		if (equipment[item]!=false&&equipment[item].type!="ring"){
 			var itemimg = document.getElementById(equipment[item].type);
 			ctx.drawImage(itemimg,positionx,positiony,tilesize,tilesize);
@@ -105,7 +105,7 @@ export function drawcreature(creaturetype,positionx,positiony,equipment,mapsize,
 	var ctx = document.getElementById("map").getContext("2d");
 	var creatureimg = document.getElementById(creaturetype);
 	ctx.drawImage(creatureimg,positionx,positiony,tilesize,tilesize);
-	for (item in equipment) {
+	for (const item in equipment) {
 		if (equipment[item]!=false&&equipment[item].type!="ring"){
 			var itemimg = document.getElementById(equipment[item]);
 			ctx.drawImage(itemimg,positionx,positiony,tilesize,tilesize);
@@ -116,7 +116,7 @@ export function drawportrait(creaturetype,equipment) {
 	var ctx = document.getElementById("controls").getContext("2d");
 	var creatureimg = document.getElementById(creaturetype+"144");
 	ctx.drawImage(creatureimg,0,180);
-	for (item in equipment) {
+	for (const item in equipment) {
 		if (equipment[item]!=false&&equipment[item].type!="ring"){
 			var itemimg = document.getElementById(equipment[item]+"144");
 			ctx.drawImage(itemimg,0,180);
@@ -130,9 +130,9 @@ export function drawvisterrain(layer,decals,offset,mapsize,radius) {
 	if (typeof offset!='undefined'){
 		ctx.translate(offset.x,offset.y);
 	}
-	for (i=0;i<19;i++){
+	for (let i=0;i<19;i++){
 		if (typeof layer[i]!='undefined'){
-			for (j=0;j<19;j++){
+			for (let j=0;j<19;j++){
 				if (typeof layer[i][j]!='undefined'){
 					var tile=layer[i][j];
 				} else {
@@ -176,7 +176,7 @@ export function drawvisterrain(layer,decals,offset,mapsize,radius) {
 				}
 			}
 		} else {
-			for (j=0;j<19;j++){
+			for (let j=0;j<19;j++){
 				ctx.fillStyle = "rgb(0,0,0)";
 				ctx.fillRect(i*tilesize,j*tilesize,tilesize,tilesize);
 			}
@@ -192,9 +192,9 @@ export function shadeoutside(layer,offset,mapsize,radius) {
 	if (typeof offset!='undefined'){
 		ctx.translate(offset.x,offset.y);
 	}
-	for (i=0;i<19;i++){
+	for (let i=0;i<19;i++){
 		if (typeof layer[i]!='undefined'){
-			for (j=0;j<19;j++){
+			for (let j=0;j<19;j++){
 				if (typeof layer[i][j]!='undefined'){
 					var tile=layer[i][j];
 				} else {
@@ -210,7 +210,7 @@ export function shadeoutside(layer,offset,mapsize,radius) {
 				}
 			}
 		} else {
-			for (j=0;j<21;j++){
+			for (let j=0;j<21;j++){
 				ctx.fillStyle = "rgb(0,0,0)";
 				ctx.fillRect(i*tilesize,j*tilesize,tilesize,tilesize);
 			}
@@ -255,7 +255,7 @@ export function drawanimationbox(terrain,decals,items,creatures,square,offset,bo
 	
 	var ctx = document.getElementById("map").getContext("2d");
 	if (tilesize+Math.min(offset.x,0)>0&&tilesize+Math.min(offset.y,0)>0) {
-		for (layer in stackoriginal){
+		for (const layer in stackoriginal){
 			if (stackoriginal[layer]!=false&&(layer<3||projecting)){
 				var imgoriginal=document.getElementById(stackoriginal[layer]);
 				ctx.drawImage(imgoriginal,
@@ -271,7 +271,7 @@ export function drawanimationbox(terrain,decals,items,creatures,square,offset,bo
 			}
 		}
 	} if (Math.abs(offset.x)>0&&Math.abs(offset.y)>0) {
-		for (layer in stackfurthest){
+		for (const layer in stackfurthest){
 			if (stackfurthest[layer]!=false){
 				var imgfurthest=document.getElementById(stackfurthest[layer]);
 				ctx.drawImage(imgfurthest,
@@ -286,7 +286,7 @@ export function drawanimationbox(terrain,decals,items,creatures,square,offset,bo
 			}
 		}
 	} if (tilesize+Math.min(offset.x,0)>0&&Math.abs(offset.y)>0) {
-		for (layer in stackfirstaux){
+		for (const layer in stackfirstaux){
 			if (stackfirstaux[layer]!=false){
 				var imgfirstaux=document.getElementById(stackfirstaux[layer]);
 				ctx.drawImage(imgfirstaux,
@@ -302,7 +302,7 @@ export function drawanimationbox(terrain,decals,items,creatures,square,offset,bo
 			}
 		}
 	} if (Math.abs(offset.x)>0&&tilesize+Math.min(offset.y,0)>0) {
-		for (layer in stacksecondaux){
+		for (const layer in stacksecondaux){
 			if (stacksecondaux[layer]!=false){
 				var imgsecondaux=document.getElementById(stacksecondaux[layer]);
 				ctx.drawImage(imgsecondaux,
