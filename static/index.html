@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="util.js"></script>
+<script src="draw.js"></script>
+<script src="animation.js"></script>
+<script src="keyboard.js"></script>
+<link rel="stylesheet" type="text/css" href="gwarl.css">
+<script src="gwarl.js"></script>
+</head>
+<body>
+<div id="graphics">
+	<img id="uibars" class="graphic" src="./img/uigraphics/bars.png"></img>
+	<img id="uicast" class="graphic" src="./img/uigraphics/cast.png"></img>
+	<img id="uiexplore" class="graphic" src="./img/uigraphics/explore.png"></img>
+	<img id="uifight" class="graphic" src="./img/uigraphics/fight.png"></img>
+	<img id="uiinfobox" class="graphic" src="./img/uigraphics/infobox.png"></img>
+	<img id="uiitembutton" class="graphic" src="./img/uigraphics/itembutton.png"></img>
+	<img id="uiitems" class="graphic" src="./img/uigraphics/items.png"></img>
+	<img id="uimagic" class="graphic" src="./img/uigraphics/magic.png"></img>
+	<img id="uimagicbutton" class="graphic" src="./img/uigraphics/magicbutton.png"></img>
+	<img id="uioptions" class="graphic" src="./img/uigraphics/options.png"></img>
+	<img id="uioptionsbuttons" class="graphic" src="./img/uigraphics/optionsbuttons.png"></img>
+	<img id="uirest" class="graphic" src="./img/uigraphics/rest.png"></img>
+	<img id="uiskills" class="graphic" src="./img/uigraphics/skills.png"></img>
+	<img id="uiskillbutton" class="graphic" src="./img/uigraphics/skillbutton.png"></img>
+	<img id="uistats" class="graphic" src="./img/uigraphics/stats.png"></img>
+
+<img id="none" class="graphic" src="./img/resized/none36.png">
+<img id="none144" class="graphic" src="./img/resized/none144.png">
+<img id="wall" class="graphic" src="./img/resized/wall36.png">
+<img id="floor" class="graphic" src="./img/resized/floor36.png">
+<img id="stairup" class="graphic" src="./img/resized/stairup36.png">
+<img id="stairdown" class="graphic" src="./img/resized/stairdown36.png">
+
+<img id="potion144" class="graphic" src="./img/resized/potion144.png">
+<img id="potion" class="graphic" src="./img/resized/potion36.png">
+<img id="ring144" class="graphic" src="./img/resized/ring144.png">
+<img id="ring" class="graphic" src="./img/resized/ring36.png">
+
+
+
+<div>
+    <img class="graphic" id="player144"
+            src="./img/resized/player144.png">
+    </img>
+    <img class="graphic" id="player"
+            src="./img/resized/player36.png">
+    </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="rat144"
+            src="./img/resized/rat144.png">
+    </img>
+    <img class="graphic" id="rat"
+            src="./img/resized/rat36.png">
+    </img>
+    
+        <img class="graphic" id="ratcorpse144"
+                src="./img/resized/ratcorpse144.png">
+        </img>
+        <img class="graphic" id="ratcorpse"
+                src="./img/resized/ratcorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="centipede144"
+            src="./img/resized/centipede144.png">
+    </img>
+    <img class="graphic" id="centipede"
+            src="./img/resized/centipede36.png">
+    </img>
+    
+        <img class="graphic" id="centipedecorpse144"
+                src="./img/resized/centipedecorpse144.png">
+        </img>
+        <img class="graphic" id="centipedecorpse"
+                src="./img/resized/centipedecorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="spider144"
+            src="./img/resized/spider144.png">
+    </img>
+    <img class="graphic" id="spider"
+            src="./img/resized/spider36.png">
+    </img>
+    
+        <img class="graphic" id="spidercorpse144"
+                src="./img/resized/spidercorpse144.png">
+        </img>
+        <img class="graphic" id="spidercorpse"
+                src="./img/resized/spidercorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="wolf144"
+            src="./img/resized/wolf144.png">
+    </img>
+    <img class="graphic" id="wolf"
+            src="./img/resized/wolf36.png">
+    </img>
+    
+        <img class="graphic" id="wolfcorpse144"
+                src="./img/resized/wolfcorpse144.png">
+        </img>
+        <img class="graphic" id="wolfcorpse"
+                src="./img/resized/wolfcorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="scorpion144"
+            src="./img/resized/scorpion144.png">
+    </img>
+    <img class="graphic" id="scorpion"
+            src="./img/resized/scorpion36.png">
+    </img>
+    
+        <img class="graphic" id="scorpioncorpse144"
+                src="./img/resized/scorpioncorpse144.png">
+        </img>
+        <img class="graphic" id="scorpioncorpse"
+                src="./img/resized/scorpioncorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="bear144"
+            src="./img/resized/bear144.png">
+    </img>
+    <img class="graphic" id="bear"
+            src="./img/resized/bear36.png">
+    </img>
+    
+        <img class="graphic" id="bearcorpse144"
+                src="./img/resized/bearcorpse144.png">
+        </img>
+        <img class="graphic" id="bearcorpse"
+                src="./img/resized/bearcorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="deutero144"
+            src="./img/resized/deutero144.png">
+    </img>
+    <img class="graphic" id="deutero"
+            src="./img/resized/deutero36.png">
+    </img>
+    
+        <img class="graphic" id="deuterocorpse144"
+                src="./img/resized/deuterocorpse144.png">
+        </img>
+        <img class="graphic" id="deuterocorpse"
+                src="./img/resized/deuterocorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="manticore144"
+            src="./img/resized/manticore144.png">
+    </img>
+    <img class="graphic" id="manticore"
+            src="./img/resized/manticore36.png">
+    </img>
+    
+        <img class="graphic" id="manticorecorpse144"
+                src="./img/resized/manticorecorpse144.png">
+        </img>
+        <img class="graphic" id="manticorecorpse"
+                src="./img/resized/manticorecorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="phoenix144"
+            src="./img/resized/phoenix144.png">
+    </img>
+    <img class="graphic" id="phoenix"
+            src="./img/resized/phoenix36.png">
+    </img>
+    
+        <img class="graphic" id="phoenixcorpse144"
+                src="./img/resized/phoenixcorpse144.png">
+        </img>
+        <img class="graphic" id="phoenixcorpse"
+                src="./img/resized/phoenixcorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="goblin144"
+            src="./img/resized/goblin144.png">
+    </img>
+    <img class="graphic" id="goblin"
+            src="./img/resized/goblin36.png">
+    </img>
+    
+        <img class="graphic" id="goblincorpse144"
+                src="./img/resized/goblincorpse144.png">
+        </img>
+        <img class="graphic" id="goblincorpse"
+                src="./img/resized/goblincorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="goblinsoldier144"
+            src="./img/resized/goblinsoldier144.png">
+    </img>
+    <img class="graphic" id="goblinsoldier"
+            src="./img/resized/goblinsoldier36.png">
+    </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="orcslave144"
+            src="./img/resized/orcslave144.png">
+    </img>
+    <img class="graphic" id="orcslave"
+            src="./img/resized/orcslave36.png">
+    </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="goblinshaman144"
+            src="./img/resized/goblinshaman144.png">
+    </img>
+    <img class="graphic" id="goblinshaman"
+            src="./img/resized/goblinshaman36.png">
+    </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="orc144"
+            src="./img/resized/orc144.png">
+    </img>
+    <img class="graphic" id="orc"
+            src="./img/resized/orc36.png">
+    </img>
+    
+        <img class="graphic" id="orccorpse144"
+                src="./img/resized/orccorpse144.png">
+        </img>
+        <img class="graphic" id="orccorpse"
+                src="./img/resized/orccorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="orcsoldier144"
+            src="./img/resized/orcsoldier144.png">
+    </img>
+    <img class="graphic" id="orcsoldier"
+            src="./img/resized/orcsoldier36.png">
+    </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="orcshaman144"
+            src="./img/resized/orcshaman144.png">
+    </img>
+    <img class="graphic" id="orcshaman"
+            src="./img/resized/orcshaman36.png">
+    </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="troll144"
+            src="./img/resized/troll144.png">
+    </img>
+    <img class="graphic" id="troll"
+            src="./img/resized/troll36.png">
+    </img>
+    
+        <img class="graphic" id="trollcorpse144"
+                src="./img/resized/trollcorpse144.png">
+        </img>
+        <img class="graphic" id="trollcorpse"
+                src="./img/resized/trollcorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="orccaptain144"
+            src="./img/resized/orccaptain144.png">
+    </img>
+    <img class="graphic" id="orccaptain"
+            src="./img/resized/orccaptain36.png">
+    </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="skeleton144"
+            src="./img/resized/skeleton144.png">
+    </img>
+    <img class="graphic" id="skeleton"
+            src="./img/resized/skeleton36.png">
+    </img>
+    
+        <img class="graphic" id="skeletoncorpse144"
+                src="./img/resized/skeletoncorpse144.png">
+        </img>
+        <img class="graphic" id="skeletoncorpse"
+                src="./img/resized/skeletoncorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="mummy144"
+            src="./img/resized/mummy144.png">
+    </img>
+    <img class="graphic" id="mummy"
+            src="./img/resized/mummy36.png">
+    </img>
+    
+        <img class="graphic" id="mummycorpse144"
+                src="./img/resized/mummycorpse144.png">
+        </img>
+        <img class="graphic" id="mummycorpse"
+                src="./img/resized/mummycorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="wraith144"
+            src="./img/resized/wraith144.png">
+    </img>
+    <img class="graphic" id="wraith"
+            src="./img/resized/wraith36.png">
+    </img>
+    
+        <img class="graphic" id="wraithcorpse144"
+                src="./img/resized/wraithcorpse144.png">
+        </img>
+        <img class="graphic" id="wraithcorpse"
+                src="./img/resized/wraithcorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="ghoul144"
+            src="./img/resized/ghoul144.png">
+    </img>
+    <img class="graphic" id="ghoul"
+            src="./img/resized/ghoul36.png">
+    </img>
+    
+        <img class="graphic" id="ghoulcorpse144"
+                src="./img/resized/ghoulcorpse144.png">
+        </img>
+        <img class="graphic" id="ghoulcorpse"
+                src="./img/resized/ghoulcorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="banshee144"
+            src="./img/resized/banshee144.png">
+    </img>
+    <img class="graphic" id="banshee"
+            src="./img/resized/banshee36.png">
+    </img>
+    
+        <img class="graphic" id="bansheecorpse144"
+                src="./img/resized/bansheecorpse144.png">
+        </img>
+        <img class="graphic" id="bansheecorpse"
+                src="./img/resized/bansheecorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="sentinel144"
+            src="./img/resized/sentinel144.png">
+    </img>
+    <img class="graphic" id="sentinel"
+            src="./img/resized/sentinel36.png">
+    </img>
+    
+        <img class="graphic" id="sentinelcorpse144"
+                src="./img/resized/sentinelcorpse144.png">
+        </img>
+        <img class="graphic" id="sentinelcorpse"
+                src="./img/resized/sentinelcorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="imp144"
+            src="./img/resized/imp144.png">
+    </img>
+    <img class="graphic" id="imp"
+            src="./img/resized/imp36.png">
+    </img>
+    
+        <img class="graphic" id="impcorpse144"
+                src="./img/resized/impcorpse144.png">
+        </img>
+        <img class="graphic" id="impcorpse"
+                src="./img/resized/impcorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="demon144"
+            src="./img/resized/demon144.png">
+    </img>
+    <img class="graphic" id="demon"
+            src="./img/resized/demon36.png">
+    </img>
+    
+        <img class="graphic" id="demoncorpse144"
+                src="./img/resized/demoncorpse144.png">
+        </img>
+        <img class="graphic" id="demoncorpse"
+                src="./img/resized/demoncorpse36.png">
+        </img>
+    
+</div>
+
+<div>
+    <img class="graphic" id="baron144"
+            src="./img/resized/baron144.png">
+    </img>
+    <img class="graphic" id="baron"
+            src="./img/resized/baron36.png">
+    </img>
+    
+        <img class="graphic" id="baroncorpse144"
+                src="./img/resized/baroncorpse144.png">
+        </img>
+        <img class="graphic" id="baroncorpse"
+                src="./img/resized/baroncorpse36.png">
+        </img>
+    
+</div>
+
+
+
+<div>
+    <img class="graphic" id="staff144"
+            src="./img/resized/staff144.png">
+    </img>
+    <img class="graphic" id="staff"
+            src="./img/resized/staff36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="knife144"
+            src="./img/resized/knife144.png">
+    </img>
+    <img class="graphic" id="knife"
+            src="./img/resized/knife36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="shortsword144"
+            src="./img/resized/shortsword144.png">
+    </img>
+    <img class="graphic" id="shortsword"
+            src="./img/resized/shortsword36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="broadsword144"
+            src="./img/resized/broadsword144.png">
+    </img>
+    <img class="graphic" id="broadsword"
+            src="./img/resized/broadsword36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="handaxe144"
+            src="./img/resized/handaxe144.png">
+    </img>
+    <img class="graphic" id="handaxe"
+            src="./img/resized/handaxe36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="waraxe144"
+            src="./img/resized/waraxe144.png">
+    </img>
+    <img class="graphic" id="waraxe"
+            src="./img/resized/waraxe36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="cudgel144"
+            src="./img/resized/cudgel144.png">
+    </img>
+    <img class="graphic" id="cudgel"
+            src="./img/resized/cudgel36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="mace144"
+            src="./img/resized/mace144.png">
+    </img>
+    <img class="graphic" id="mace"
+            src="./img/resized/mace36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="spear144"
+            src="./img/resized/spear144.png">
+    </img>
+    <img class="graphic" id="spear"
+            src="./img/resized/spear36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="spetum144"
+            src="./img/resized/spetum144.png">
+    </img>
+    <img class="graphic" id="spetum"
+            src="./img/resized/spetum36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="billhook144"
+            src="./img/resized/billhook144.png">
+    </img>
+    <img class="graphic" id="billhook"
+            src="./img/resized/billhook36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="demonsword144"
+            src="./img/resized/demonsword144.png">
+    </img>
+    <img class="graphic" id="demonsword"
+            src="./img/resized/demonsword36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="demonwhip144"
+            src="./img/resized/demonwhip144.png">
+    </img>
+    <img class="graphic" id="demonwhip"
+            src="./img/resized/demonwhip36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="demontrident144"
+            src="./img/resized/demontrident144.png">
+    </img>
+    <img class="graphic" id="demontrident"
+            src="./img/resized/demontrident36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="wooden144"
+            src="./img/resized/wooden144.png">
+    </img>
+    <img class="graphic" id="wooden"
+            src="./img/resized/wooden36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="kite144"
+            src="./img/resized/kite144.png">
+    </img>
+    <img class="graphic" id="kite"
+            src="./img/resized/kite36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="steel144"
+            src="./img/resized/steel144.png">
+    </img>
+    <img class="graphic" id="steel"
+            src="./img/resized/steel36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="robes144"
+            src="./img/resized/robes144.png">
+    </img>
+    <img class="graphic" id="robes"
+            src="./img/resized/robes36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="leather144"
+            src="./img/resized/leather144.png">
+    </img>
+    <img class="graphic" id="leather"
+            src="./img/resized/leather36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="chainmail144"
+            src="./img/resized/chainmail144.png">
+    </img>
+    <img class="graphic" id="chainmail"
+            src="./img/resized/chainmail36.png">
+    </img>
+</div>
+
+
+
+<div>
+    <img class="graphic" id="plate144"
+            src="./img/resized/plate144.png">
+    </img>
+    <img class="graphic" id="plate"
+            src="./img/resized/plate36.png">
+    </img>
+</div>
+<img id="decal1" class="graphic" src="./img/resized/decal136.png">
+<img id="decal2" class="graphic" src="./img/resized/decal236.png">
+<img id="decal3" class="graphic" src="./img/resized/decal336.png">
+<img id="decal4" class="graphic" src="./img/resized/decal436.png">
+<img id="decal5" class="graphic" src="./img/resized/decal536.png">
+<img id="decal6" class="graphic" src="./img/resized/decal636.png">
+<img id="decal7" class="graphic" src="./img/resized/decal736.png">
+<img id="decal8" class="graphic" src="./img/resized/decal836.png">
+<img id="decal9" class="graphic" src="./img/resized/decal936.png">
+</div>
+<div id="game">
+
+<div id="sidebar">
+	<canvas id="controls" width="388" height="518"></canvas>
+	<div id="movelog">
+	</div>	
+</div>
+<div id="mapcontainer">
+	<div id="loadingscreen">
+	</div>
+	<div id="menu">
+		<button id="newlevel">New game/continue</button>
+		<div id="help">
+		<h2>Controls:</h2>
+		<h3>Mouse:</h3>
+		<p>Click to move or attack. Shift+click to cast a spell with a target. Click the player tile to pass a turn or get an item. Click items in the inventory to use them.</p>
+		<h3>Keyboard:</h3>
+		<p>Numpad and arrow keys move*. Numpad 5 to pass a turn or pick up an item. E to explore and descend staircases, F to fight the closest enemy, R to rest, G to get an item off the ground, C to cast the currently selected spell at the nearest creature.</p>
+		<p>*check if numlock is on if unable to move diagonally</p>
+		<p>There is music hidden in the options panel</p>
+		</div>
+	</div>
+	<div id="deathscreen">
+	</div>
+	<canvas id="map" width="612" height="612"></canvas>
+</div>
+</div>
+<div id="debug"></div>
+<div id="outtakes">
+</div>
+</body>
+</html>
