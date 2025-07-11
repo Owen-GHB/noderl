@@ -2,9 +2,12 @@ import { runCommand, getsquarecontents, getnexttarget, parsedata, drawUIskin } f
 import { updategame, animationcycle } from './animation.js';
 import { drawportrait } from './draw.js';
 
-var waiting=false;
-var showanimations=true;
-var interrupt=false;
+export const gameState = {
+	waiting: false
+};
+var showanimations=true; // Assuming these are still module-level globals for now, not shared.
+var interrupt=false;   // Or if they need sharing, they'd also go into gameState.
+
 document.addEventListener('DOMContentLoaded', function(){
 	var mapsize=612;
 	var radius=8;
@@ -32,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	}
 	document.addEventListener('keydown',function(e){
 		e.preventDefault();
-		if (!waiting){
+		if (!gameState.waiting){
 			var keycode = e.which;        
 			var move=false;
 			switch (keycode) {
@@ -100,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					break;
 			}
 			if (move!=false) {
-				waiting=true;
+				gameState.waiting=true;
 				var ctx = document.getElementById("map").getContext("2d");
 				ctx.font = "12px";
 				ctx.fillStyle = "#C0C0C0";
@@ -127,8 +130,8 @@ document.addEventListener('DOMContentLoaded', function(){
 		} else {
 			input={"x":inputx,"y":inputy};
 		}
-		if (!waiting) {
-			waiting=true;
+		if (!gameState.waiting) {
+			gameState.waiting=true;
 			var ctx = document.getElementById("map").getContext("2d");
 			ctx.font = "12px";
 			ctx.fillStyle = "#C0C0C0";
@@ -186,8 +189,8 @@ document.addEventListener('DOMContentLoaded', function(){
 	document.getElementById("newlevel").addEventListener('click', function(){
 		document.getElementById("menu").style.display = "none";
 		document.getElementById("map").style.display = "block";
-		if (!waiting) {
-			waiting=true;
+		if (!gameState.waiting) {
+			gameState.waiting=true;
 			var ctx = document.getElementById("map").getContext("2d");
 			ctx.font = "12px";
 			ctx.fillStyle = "#C0C0C0";
@@ -263,8 +266,8 @@ document.addEventListener('DOMContentLoaded', function(){
 				let inputx=(mousex-(mousex%3))/3;
 				let inputy=(mousey-(mousey%3))/3;
 				input={"x":inputx,"y":inputy};
-				if (!waiting) {
-					waiting=true;
+				if (!gameState.waiting) {
+					gameState.waiting=true;
 					var ctx = document.getElementById("map").getContext("2d");
 					ctx.font = "12px";
 					ctx.fillStyle = "#C0C0C0";
@@ -285,9 +288,9 @@ document.addEventListener('DOMContentLoaded', function(){
 				} else {
 					if (mousex<232){
 						fback="explore";
-						if (!waiting) {
+						if (!gameState.waiting) {
 							input="explore";
-							waiting=true;
+							gameState.waiting=true;
 							var ctx = document.getElementById("map").getContext("2d");
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
@@ -302,9 +305,9 @@ document.addEventListener('DOMContentLoaded', function(){
 					} else if (mousex<284){
 						fback="fight";
 						let target=getnexttarget(lastoutputs.creatures,radius);
-						if (!waiting&&target!=false) {
+						if (!gameState.waiting&&target!=false) {
 							input=target;
-							waiting=true;
+							gameState.waiting=true;
 							var ctx = document.getElementById("map").getContext("2d");
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
@@ -321,8 +324,8 @@ document.addEventListener('DOMContentLoaded', function(){
 					} else if (mousex<336){
 						fback="rest";
 						input = "wait";
-						if (!waiting) {
-							waiting=true;
+						if (!gameState.waiting) {
+							gameState.waiting=true;
 							var ctx = document.getElementById("map").getContext("2d");
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
@@ -336,9 +339,9 @@ document.addEventListener('DOMContentLoaded', function(){
 					} else {
 						fback="cast";
 						let target=getnexttarget(lastoutputs.creatures,radius);
-						if (!waiting&&target!=false) {
+						if (!gameState.waiting&&target!=false) {
 							input={"spell":casting,"x":target.x,"y":target.y};
-							waiting=true;
+							gameState.waiting=true;
 							var ctx = document.getElementById("map").getContext("2d");
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
@@ -403,8 +406,8 @@ document.addEventListener('DOMContentLoaded', function(){
 							itemchoice=Math.floor((mousex-136)/36);
 							fback="ground "+itemchoice;
 						}
-						if (!waiting) {
-							waiting=true;
+						if (!gameState.waiting) {
+							gameState.waiting=true;
 							var ctx = document.getElementById("map").getContext("2d");
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
@@ -419,8 +422,8 @@ document.addEventListener('DOMContentLoaded', function(){
 				} else if (opentab=="options"){
 					if (mousex<190&&mousey<386){
 						var input = "suicide";
-						if (!waiting) {
-							waiting=true;
+						if (!gameState.waiting) {
+							gameState.waiting=true;
 							var ctx = document.getElementById("map").getContext("2d");
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";

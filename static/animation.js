@@ -9,6 +9,7 @@ import {
     shadeoutside,
     drawanimationbox
 } from './draw.js';
+import { gameState } from './gwarl.js';
 
 export function updategame(output,mapsize,radius,opentab){
 	var offset = {x:0, y:0};
@@ -484,7 +485,7 @@ export function animationcycle(output,lastoutput,ctx,mapsize,radius,opentab){
 		}
 		return output;
 	}
-	waiting=false;
+	gameState.waiting=false;
 	if (output.animations){
 		done=animate(animations,done);
 	} else {
