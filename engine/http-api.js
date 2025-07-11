@@ -1,5 +1,5 @@
 const { URL } = require('url');
-const { processJSONInput } = require('./playmove.js');
+const { processJSONInput } = require('./json-api.js');
 
 async function handleApiRequest(req, res) {
   try {

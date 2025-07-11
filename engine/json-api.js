@@ -1,4 +1,4 @@
-import { processCommand } from "./interface";
+const { processCommand } = require('./interface.js');
 
 function processJSONInput(jsonString) {
   let data;

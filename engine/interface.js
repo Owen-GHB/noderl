@@ -1,4 +1,4 @@
-import { processWithSavefile, returnMinimap, startFromSavefile } from "./commands";
+const { processWithSavefile, returnMinimap, startFromSavefile } = require('./commands.js');
 
 function processCommand(command, modifier, filename) {
   try {
