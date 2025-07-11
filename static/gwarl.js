@@ -1,3 +1,7 @@
+import { runCommand, getsquarecontents, getnexttarget, parsedata, drawUIskin } from './util.js';
+import { updategame, animationcycle } from './animation.js';
+import { drawportrait } from './draw.js';
+
 var waiting=false;
 var showanimations=true;
 var interrupt=false;

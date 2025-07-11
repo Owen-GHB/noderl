@@ -1,4 +1,16 @@
-function updategame(output,mapsize,radius,opentab){
+import { runCommand, getcreatureatsquare, drawUIskin } from './util.js';
+import {
+    drawtominimap,
+    drawvisthings,
+    drawviscreatures,
+    drawplayer,
+    drawcreature,
+    drawvisterrain,
+    shadeoutside,
+    drawanimationbox
+} from './draw.js';
+
+export function updategame(output,mapsize,radius,opentab){
 	var offset = {x:0, y:0};
 	var tilesize=Math.floor(mapsize/(2*radius+1));
 	drawvisterrain(output.explored,output.decals,offset,mapsize,radius);
@@ -112,7 +124,7 @@ function updategame(output,mapsize,radius,opentab){
 	return output;
 }
 
-function animationcycle(output,lastoutput,ctx,mapsize,radius,opentab){
+export function animationcycle(output,lastoutput,ctx,mapsize,radius,opentab){
 	var animations=output.animations;
 	var tilesize=Math.floor(mapsize/(2*radius+1));
 	var timer=0;

@@ -1,4 +1,6 @@
-function drawtominimap(layer,centre) {
+import { getlocalimagestack } from './util.js';
+
+export function drawtominimap(layer,centre) {
 	var mapsize=180;
 	var radius=8;
 	var xlow=centre.x-radius;
@@ -39,7 +41,7 @@ function drawtominimap(layer,centre) {
 	ctx.fillStyle = "rgb(0,200,0)";
 	ctx.fillRect(centre.x*tilesize,centre.y*tilesize,tilesize,tilesize);
 }
-function drawvisthings(things,centre,offset,mapsize,radius){
+export function drawvisthings(things,centre,offset,mapsize,radius){
 	var xlow=centre.x-radius;
 	var xhigh=centre.x+radius;
 	var ylow=centre.y-radius;
@@ -58,7 +60,7 @@ function drawvisthings(things,centre,offset,mapsize,radius){
 		ctx.translate(-offset.x,-offset.y);
 	}
 }
-function drawviscreatures(things,centre,offset,mapsize,radius){
+export function drawviscreatures(things,centre,offset,mapsize,radius){
 	var xlow=centre.x-radius;
 	var xhigh=centre.x+radius;
 	var ylow=centre.y-radius;
@@ -86,7 +88,7 @@ function drawviscreatures(things,centre,offset,mapsize,radius){
 		ctx.translate(-offset.x,-offset.y);
 	}
 }
-function drawplayer(positionx,positiony,equipment,mapsize,radius) {
+export function drawplayer(positionx,positiony,equipment,mapsize,radius) {
 	var tilesize=Math.floor(mapsize/(2*radius+1));
 	var ctx = document.getElementById("map").getContext("2d");
 	var playerimg = document.getElementById("player");
@@ -98,7 +100,7 @@ function drawplayer(positionx,positiony,equipment,mapsize,radius) {
 		}
 	}
 }
-function drawcreature(creaturetype,positionx,positiony,equipment,mapsize,radius) {
+export function drawcreature(creaturetype,positionx,positiony,equipment,mapsize,radius) {
 	var tilesize=Math.floor(mapsize/(2*radius+1));
 	var ctx = document.getElementById("map").getContext("2d");
 	var creatureimg = document.getElementById(creaturetype);
@@ -110,7 +112,7 @@ function drawcreature(creaturetype,positionx,positiony,equipment,mapsize,radius)
 		}
 	}
 }
-function drawportrait(creaturetype,equipment) {
+export function drawportrait(creaturetype,equipment) {
 	var ctx = document.getElementById("controls").getContext("2d");
 	var creatureimg = document.getElementById(creaturetype+"144");
 	ctx.drawImage(creatureimg,0,180);
@@ -121,7 +123,7 @@ function drawportrait(creaturetype,equipment) {
 		}
 	}
 }
-function drawvisterrain(layer,decals,offset,mapsize,radius) {
+export function drawvisterrain(layer,decals,offset,mapsize,radius) {
 	var tilesize=Math.floor(mapsize/(2*radius+1));
 	var ctx = document.getElementById("map").getContext("2d");
 	//grid shading
@@ -184,7 +186,7 @@ function drawvisterrain(layer,decals,offset,mapsize,radius) {
 		ctx.translate(-offset.x,-offset.y);
 	}
 }
-function shadeoutside(layer,offset,mapsize,radius) {
+export function shadeoutside(layer,offset,mapsize,radius) {
 	var tilesize=Math.floor(mapsize/(2*radius+1));
 	var ctx = document.getElementById("map").getContext("2d");
 	if (typeof offset!='undefined'){
@@ -219,7 +221,7 @@ function shadeoutside(layer,offset,mapsize,radius) {
 		ctx.translate(-offset.x,-offset.y);
 	}
 }
-function drawanimationbox(terrain,decals,items,creatures,square,offset,boxsize,mapsize,radius,projecting){
+export function drawanimationbox(terrain,decals,items,creatures,square,offset,boxsize,mapsize,radius,projecting){
 	var tilesize=Math.floor(mapsize/(2*radius+1));
 	var imgsize=36;
 	var sizeadjust=(tilesize-boxsize)/2;

@@ -13,14 +13,14 @@ async function postData(data = {}) {
 	}
 	return response.text();
 }
-function runCommand(command,modifier){
+export function runCommand(command,modifier){
 	return postData({ command: command, modifier: modifier, filename: 'Player' });
 }
 function getmousesquare(mousex,mousey,tilesize){
 	squarex=(mousex-(mousex%tilesize))/tilesize;
 	squarey=(mousey-(mousey%tilesize))/tilesize;
 }
-function getsquarecontents(terrain,decals,items,creatures,square,radius){
+export function getsquarecontents(terrain,decals,items,creatures,square,radius){
 	var playerx=creatures[0].position.x;
 	var playery=creatures[0].position.y;
 	var localterrain;
@@ -66,7 +66,7 @@ function getsquarecontents(terrain,decals,items,creatures,square,radius){
 	contentstack.push(localcreature);
 	return contentstack;
 }
-function getcreatureatsquare(creatures,square,radius){
+export function getcreatureatsquare(creatures,square,radius){
 	var playerx=false;
 	var playery=false;
 	for (creature in creatures){
@@ -83,7 +83,7 @@ function getcreatureatsquare(creatures,square,radius){
 	}
 	return localcreature;
 }
-function getlocalimagestack(terrain,decals,items,creatures,square,radius){
+export function getlocalimagestack(terrain,decals,items,creatures,square,radius){
 	var squarecontents=getsquarecontents(terrain,decals,items,creatures,square,radius);
 	var imgstack = [];
 	for (i=0;i<3;i++){
@@ -99,7 +99,7 @@ function getlocalimagestack(terrain,decals,items,creatures,square,radius){
 	}
 	return imgstack;
 }
-function getnexttarget(creatures,radius) {
+export function getnexttarget(creatures,radius) {
 	var target=false;
 	var dist=2*radius;
 	for (creature in creatures){
@@ -112,7 +112,7 @@ function getnexttarget(creatures,radius) {
 	}
 	return target;
 }
-function parsedata(thisdata){
+export function parsedata(thisdata){
 	//document.getElementById("outtakes").innerHTML=thisdata;
 	var outputs=JSON.parse(thisdata);
 	//parse terrain/decals output
@@ -130,7 +130,7 @@ function parsedata(thisdata){
 	}
 	return outputs;
 }
-function drawUIskin(opentab){ 
+export function drawUIskin(opentab){
 	var ctx = document.getElementById("controls").getContext("2d");
 	var img;
 	
