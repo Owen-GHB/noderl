@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.font = "12px";
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
-			postData("/api", lastinput).then(data => {
+			playmove(lastinput.command, lastinput.modifier).then(data => {
 				if (data === null) return; // Error handled in postData
 				var output=parsedata(data);
 				lastoutputs=refreshgame(output,outputs,lastinput);
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				ctx.font = "12px";
 				ctx.fillStyle = "#C0C0C0";
 				ctx.fillText("Waiting for server",0,10);
-				postData("/api", move).then(data => {
+				playmove(move.command, move.modifier).then(data => {
 					if (data === null) return;
 					var output=parsedata(data);
 					lastoutputs=refreshgame(output,lastoutputs,move);
@@ -130,13 +130,13 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
 			if (event.shiftKey){
-				postData("/api", {command:"cast",modifier:input}).then(data => {
+				playmove("cast", input).then(data => {
 					if (data === null) return;
 					var outputs=parsedata(data);
 					lastoutputs=refreshgame(outputs,lastoutputs);
 				}).catch(error => console.error('Fetch error:', error));
 			} else {
-				postData("/api", {command:"moveto",modifier:input}).then(data => {
+				playmove("moveto", input).then(data => {
 					if (data === null) return;
 					var outputs=parsedata(data);
 					lastoutputs=refreshgame(outputs,lastoutputs,{command:"moveto",modifier:input});
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.font = "12px";
 			ctx.fillStyle = "#C0C0C0";
 			ctx.fillText("Waiting for server",0,10);
-			postData("/api", {command:"start", modifier:"Player"}).then(data => { 
+			playmove("start", "Player").then(data => {
 				if (data === null) return;
 				var outputs=parsedata(data);
 				lastoutputs=refreshgame(outputs,lastoutputs);
@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					ctx.fillStyle = "#C0C0C0";
 					ctx.fillText("Waiting for server",0,10);
 					var move = {command:"moveto",modifier:input};
-					postData("/api", move).then(data => {
+					playmove(move.command, move.modifier).then(data => {
 						if (data === null) return;
 						var outputs=parsedata(data);
 						lastoutputs=refreshgame(outputs,lastoutputs,move);
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
 							var move = {command:"moveto",modifier:input};
-							postData("/api", move).then(data => {
+							playmove(move.command, move.modifier).then(data => {
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs,move);
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api", {command:"moveto",modifier:input}).then(data => {
+							playmove("moveto", input).then(data => {
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api", {command:input,modifier:100}).then(data => {
+							playmove(input, 100).then(data => {
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api", {command:"cast",modifier:input}).then(data => {
+							playmove("cast", input).then(data => {
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
@@ -404,7 +404,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api", {command:input,modifier:itemchoice}).then(data => {
+							playmove(input, itemchoice).then(data => {
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);
@@ -420,7 +420,7 @@ document.addEventListener('DOMContentLoaded', function(){
 							ctx.font = "12px";
 							ctx.fillStyle = "#C0C0C0";
 							ctx.fillText("Waiting for server",0,10);
-							postData("/api", {command:input,modifier:false}).then(data => {
+							playmove(input, false).then(data => {
 								if (data === null) return;
 								var outputs=parsedata(data);
 								lastoutputs=refreshgame(outputs,lastoutputs);

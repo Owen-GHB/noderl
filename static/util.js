@@ -127,7 +127,7 @@ function parsedata(thisdata){
 	return outputs;
 }
 function playmove(command,modifier){
-	
+	return postData("/api", { command: command, modifier: modifier });
 }
 function drawUIskin(opentab){ 
 	var ctx = document.getElementById("controls").getContext("2d");
