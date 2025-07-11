@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Use the API router for all API endpoints
-app.use('/', apiRouter);
+app.use('/api', apiRouter);
 
 // Serve static files from the /static directory
 app.use('/', express.static(__dirname + '/static'));

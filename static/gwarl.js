@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					if (!lastoutputs || !lastoutputs.creatures) return; // Guard clause
 					var target=getnexttarget(lastoutputs.creatures,radius);
 					if (target!=false) {
-						move={command:"moveto",modifier:JSON.stringify(target)};
+						move={command:"moveto",modifier:target};
 					} else {
 						lastoutputs.movelog=["No creature in view"];
 						updategame(lastoutputs,mapsize,radius,opentab);
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function(){
 					var target=getnexttarget(lastoutputs.creatures,radius);
 					if (target!=false) {
 						input={"spell":casting,"x":target.x,"y":target.y};
-						move={command:"cast",modifier:JSON.stringify(input)};
+						move={command:"cast",modifier:input};
 					} else {
 						lastoutputs.movelog=[];
 						updategame(lastoutputs,mapsize,radius,opentab);

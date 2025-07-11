@@ -4,7 +4,7 @@ const {
   processJSONInput
 } = require('./playmove.js');
 
-router.all('/api', async (req, res) => {
+router.all('/', async (req, res) => {
   try {
     const jsonString =
       req.method === 'POST' ? req.body?.json :
