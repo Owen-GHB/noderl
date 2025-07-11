@@ -465,7 +465,7 @@ class Creature {
 
 	findStats(type) {
 	  // Load the JSON array from creatures.json (assuming it's available)
-	  const creaturesData = JSON.parse(fs.readFileSync('./data/creatures.json','utf-8'));
+	  const creaturesData = require('../data/creatures.json');
 
 	  // Find the creature object with matching creaturetype
 	  const creature = creaturesData.find(obj => obj.creaturetype === type);

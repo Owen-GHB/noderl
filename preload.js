@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {
-  processCommand: (command, modifier, filename) =>
-    ipcRenderer.invoke('process-command', command, modifier, filename),
+  processCommand: async (command, modifier, filename) => {
+    return await ipcRenderer.invoke('process-command', command, modifier, filename);
+  }
 });
