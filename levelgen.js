@@ -422,7 +422,7 @@ function makeDecals(dungeon) {
   return decals;
 }
 
-function makeLevel(dungeon, floor) {
+function makeLevel(dungeon, floor, charName) {
   const sectorsize = 15;
   const tofill = 4 + 2 * Math.min(floor, 3);
   const sectorspace = {
@@ -434,7 +434,7 @@ function makeLevel(dungeon, floor) {
   let args = "none";
 
   dungeon = carveSector(path[0], sectormap, dungeon, floor, args);
-  dungeon.addPlayer("Gwilim", "male", 0);
+  dungeon.addPlayer(charName, "male", 0);
 
   const carved = [path[0]];
 
@@ -500,11 +500,11 @@ function initGameState() {
   };
 }
 
-function makeLevels(gameState) {
+function makeLevels(gameState, charName) {
   let dungeon;
   for (let floor = 9; floor > 0; floor--) {
     dungeon = new Dungeon();
-    dungeon = makeLevel(dungeon, floor);
+    dungeon = makeLevel(dungeon, floor, charName);
 
     gameState.terrain[floor] = dungeon.terrain;
     gameState.decals[floor] = dungeon.decals;

@@ -1,4 +1,5 @@
-async function postData(url = '', data = {}) {
+async function postData(data = {}) {
+	const url = '/api';
 	const response = await fetch(url, {
 		method: 'POST',
 		headers: {
@@ -11,6 +12,9 @@ async function postData(url = '', data = {}) {
 		return null;
 	}
 	return response.text();
+}
+function runCommand(command,modifier){
+	return postData({ command: command, modifier: modifier, filename: 'Player' });
 }
 function getmousesquare(mousex,mousey,tilesize){
 	squarex=(mousex-(mousex%tilesize))/tilesize;
@@ -125,9 +129,6 @@ function parsedata(thisdata){
 		outputs.decals[i]=outputs.decals[i].split("");
 	}
 	return outputs;
-}
-function playmove(command,modifier){
-	return postData("/api", { command: command, modifier: modifier });
 }
 function drawUIskin(opentab){ 
 	var ctx = document.getElementById("controls").getContext("2d");

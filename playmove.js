@@ -80,13 +80,13 @@ function returnMinimap(filename) {
       return dungeon.getMinimap();
 }
 
-function startFromSavefile(filename) {
+function startFromSavefile(charName) {
   const boardSize = { x: 60, y: 60 };
   let dungeon;
   let gameState = {};
 
-  if (savefileExists(filename)) {
-    gameState = loadGame(filename);
+  if (savefileExists(charName)) {
+    gameState = loadGame(charName);
     gameState.globals = {
       automove: false,
       animations: [],
@@ -94,15 +94,15 @@ function startFromSavefile(filename) {
       mapRefresh: true
     };
     if (gameState.creatures[gameState.currentFloor][0].hp <= 0) {
-      ({ gameState: gameState, dungeon: dungeon } = makeLevels(gameState));
+      ({ gameState: gameState, dungeon: dungeon } = makeLevels(gameState, charName));
     }
   } else {
     gameState = initGameState();
-    ({ gameState: gameState, dungeon: dungeon } = makeLevels(gameState));
+    ({ gameState: gameState, dungeon: dungeon } = makeLevels(gameState, charName));
   }
 
   try {
-    saveGame(filename, gameState);
+    saveGame(charName, gameState);
   } catch (err) {
     console.error('Error saving game state for start:', err);
   }
@@ -187,13 +187,11 @@ async function processJSONInput(jsonString) {
     return { error: "Invalid JSON format"};
   }
 
-  const { command, modifier } = data;
+  const { command, modifier, filename } = data;
 
   if (!command) {
     return { error: "Missing 'command' in request data"};
   }
-
-  const filename = 'Player';
 
   return await processCommand(command, modifier, filename);
 }
