@@ -13,19 +13,24 @@ async function postData(data = {}) {
 	}
 	return response.text();
 }
-export function runCommand(command, modifier) {
+export async function runCommand(command, modifier) {
   const filename = 'Player';
 
   if (window.api?.processCommand) {
-    // Running in Electron with context bridge available
+    // Running in Electron via context bridge → IPC
     try {
-      return window.api.processCommand(command, modifier, filename);
+      const result = await window.api.processCommand(command, modifier, filename);
+      return JSON.stringify(result.json);
     } catch (err) {
-      return { error: 'Electron context bridge call failed', details: err.message };
+      return JSON.stringify({
+        error: 'Electron context bridge call failed',
+        details: err?.message || String(err)
+      });
     }
   } else {
-    // Fallback for browser/HTTP version
-    return postData({ command, modifier, filename });
+    // Fallback to HTTP version
+    const response = await postData({ command, modifier, filename });
+    return JSON.stringify(response);
   }
 }
 function getmousesquare(mousex,mousey,tilesize){
@@ -126,6 +131,7 @@ export function getnexttarget(creatures,radius) {
 }
 export function parsedata(thisdata){
 	//document.getElementById("outtakes").innerHTML=thisdata;
+	console.log(typeof thisdata);
 	var outputs=JSON.parse(thisdata);
 	//parse terrain/decals output
 	outputs.terrain=outputs.terrain.split("L");

@@ -2,8 +2,9 @@
   "name": "gamelogic",
   "version": "1.0.0",
   "description": "",
-  "main": "creature.js",
+  "main": "app.js",
   "scripts": {
+    "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

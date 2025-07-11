@@ -197,6 +197,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.fillText("Waiting for server",0,10);
 			runCommand("start", "Player").then(data => {
 				if (data === null) return;
+				console.log(data);
 				var outputs=parsedata(data);
 				lastoutputs=refreshgame(outputs,lastoutputs);
 				document.getElementById("movelog").innerHTML = "Player has entered the dungeon</br>";

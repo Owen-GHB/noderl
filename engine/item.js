@@ -59,7 +59,7 @@ class Item {
   }
 
 	findinfo(itemclass, name) {
-	  const itemsData = JSON.parse(fs.readFileSync('./data/items.json','utf-8'));
+	  const itemsData = require('../data/items.json');
 	  const foundItem = itemsData.find(obj => obj.class === itemclass && obj.name === name);
 	  return foundItem || null;
 	}
