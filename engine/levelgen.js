@@ -229,7 +229,7 @@ function chooseCreatureSet(floor) {
 }
 
 function makeMonsterList(creatureset, floor) {
-  const creatureData = JSON.parse(fs.readFileSync('./creatures.json','utf-8'));
+  const creatureData = JSON.parse(fs.readFileSync('./data/creatures.json','utf-8'));
   const list = creatureData.filter(entry => entry.creatureset === creatureset);
   
   let cweight = 0;
@@ -309,7 +309,7 @@ function chooseItem(floor) {
     }
   }
 
-	const itemList = JSON.parse(fs.readFileSync('./items.json','utf-8'));
+	const itemList = JSON.parse(fs.readFileSync('./data/items.json','utf-8'));
 
 	let list = [];
 

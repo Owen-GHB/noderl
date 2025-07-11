@@ -9,7 +9,7 @@ import {
     shadeoutside,
     drawanimationbox
 } from './draw.js';
-import { gameState } from './gwarl.js';
+import { globalState } from './gwarl.js';
 
 export function updategame(output,mapsize,radius,opentab){
 	var offset = {x:0, y:0};

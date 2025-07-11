@@ -1,10 +1,10 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const handleApiRequest = require('./http-api');
+const handleApiRequest = require('./engine/http-api');
 
 const PORT = 8000;
-const STATIC_DIR = path.join(__dirname, 'static');
+const STATIC_DIR = path.join(__dirname, 'ui');
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
