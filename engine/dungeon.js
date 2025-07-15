@@ -39,9 +39,11 @@ class DungeonFloor extends Terrain {
 
 	  if (visible !== undefined) {
 		this.visible = visible;
-		this.buildDistanceMap(creatures[0].position);
-	  } else if (creatures !== undefined) {
-		this.visible = this.getLineOfSightFrom(creatures[0].position);
+		if (this.creatures && this.creatures.length > 0) {
+		  this.buildDistanceMap(this.creatures[0].position);
+		}
+	  } else if (this.creatures && this.creatures.length > 0) {
+		this.visible = this.getLineOfSightFrom(this.creatures[0].position);
 	  } else {
 		this.visible = null;
 	  }
