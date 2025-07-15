@@ -3,56 +3,47 @@ const path = require('path');
 const { initGameState, makeLevels } = require('./levelgen.js');
 const { createCanvas, loadImage } = require('canvas');
 const { Terrain } = require('./mapclass.js');
-const { DungeonFloor } = require('./dungeon.js');
+const { Dungeon, DungeonFloor } = require('./dungeon.js');
 const { saveGame, loadGame, savefileExists } = require('./savefile.js');
 
 function processDungeon(command, modifier, gameState) {
+  const dungeon = new Dungeon(gameState);
+  const currentFloor = dungeon.getCurrentFloor();
+
   gameState.globals = {
 	  automove:false,
 	  animations:[],
 	  eventLog:[],
 	  mapRefresh:false,
-	  currentFloor:gameState.currentFloor
+	  currentFloor:dungeon.currentFloor
   };
 
-  const boardSize = { x: 60, y: 60 };
-  const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
-  let dungeon = new DungeonFloor(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
-
-  if (dungeon.creatures[0].hp > 0) {
-    dungeon.movePlayer(command, modifier, gameState.globals);
+  if (currentFloor.creatures[0].hp > 0) {
+    currentFloor.movePlayer(command, modifier, gameState.globals);
   }
 
   // Update the game state with the modified dungeon
-  gameState.creatures[gameState.currentFloor] = dungeon.creatures;
-  gameState.items[gameState.currentFloor] = dungeon.items;
-  gameState.explored[gameState.currentFloor] = dungeon.explored;
-  gameState.visible[gameState.currentFloor] = dungeon.visible;
-  gameState.currentFloor = dungeon.currentFloor;
+  gameState.creatures[dungeon.currentFloor] = currentFloor.creatures;
+  gameState.items[dungeon.currentFloor] = currentFloor.items;
+  gameState.explored[dungeon.currentFloor] = currentFloor.explored;
+  gameState.visible[dungeon.currentFloor] = currentFloor.visible;
+  gameState.currentFloor = currentFloor.currentFloor;
 
   // Check if the current floor has changed
-  if (gameState.globals.currentFloor === gameState.currentFloor) {
+  if (gameState.globals.currentFloor === dungeon.currentFloor) {
     gameState.globals.mapRefresh = false;
   } else {
-    const player = dungeon.creatures[0];
+    const player = currentFloor.creatures[0];
     const oldFloor = gameState.globals.currentFloor;
-    let terrain = gameState.terrain[gameState.currentFloor];
-    let creatures = gameState.creatures[gameState.currentFloor];
-    let items = gameState.items[gameState.currentFloor];
-    let explored = gameState.explored[gameState.currentFloor];
-    let decals = gameState.decals[gameState.currentFloor];
-    let visible = gameState.visible[gameState.currentFloor];
-
-    const dungeonSpace = new Terrain(boardSize, terrain);
-    dungeon = new DungeonFloor(dungeonSpace, creatures, items, explored, decals, visible);
-	  const position = dungeon.creatures[0].position;
-    dungeon.creatures[0] = JSON.parse(JSON.stringify(player));
-    dungeon.creatures[0].position = position;
-    gameState.creatures[gameState.currentFloor] = dungeon.creatures;
+    const newFloor = dungeon.getCurrentFloor();
+	  const position = newFloor.creatures[0].position;
+    newFloor.creatures[0] = JSON.parse(JSON.stringify(player));
+    newFloor.creatures[0].position = position;
+    gameState.creatures[dungeon.currentFloor] = newFloor.creatures;
 	  gameState.globals.mapRefresh = true; 
   }
 
-  return {gameState, dungeon};
+  return {gameState, dungeon: currentFloor};
 }
 
 function processWithSavefile(command, modifier, filename) {
@@ -73,32 +64,24 @@ function processWithSavefile(command, modifier, filename) {
 }
 
 function returnMinimap(filename) {
-      let gameState = loadGame(filename);
-      const boardSize = { x: 60, y: 60 };
-      const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
-      let dungeon = new DungeonFloor(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
-      return dungeon.getMinimap();
+      const gameState = loadGame(filename);
+      const dungeon = new Dungeon(gameState);
+      const currentFloor = dungeon.getCurrentFloor();
+      return currentFloor.getMinimap();
 }
 
 function startFromSavefile(charName) {
-  const boardSize = { x: 60, y: 60 };
-  let dungeon;
   let gameState = {};
+  let dungeon;
 
   if (savefileExists(charName)) {
     gameState = loadGame(charName);
-    gameState.globals = {
-      automove: false,
-      animations: [],
-      eventLog: [],
-      mapRefresh: true
-    };
     if (gameState.creatures[gameState.currentFloor][0].hp <= 0) {
-      ({ gameState: gameState, dungeon: dungeon } = makeLevels(gameState, charName));
+      ({ gameState, dungeon } = makeLevels(gameState, charName));
     }
   } else {
     gameState = initGameState();
-    ({ gameState: gameState, dungeon: dungeon } = makeLevels(gameState, charName));
+    ({ gameState, dungeon } = makeLevels(gameState, charName));
   }
 
   try {
@@ -107,10 +90,16 @@ function startFromSavefile(charName) {
     console.error('Error saving game state for start:', err);
   }
 
-  if (typeof dungeon === 'undefined') {
-    const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
-    dungeon = new DungeonFloor(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
-  }
+  const dungeonObj = new Dungeon(gameState);
+  dungeon = dungeonObj.getCurrentFloor();
+
+  gameState.globals = {
+    automove: false,
+    animations: [],
+    eventLog: [],
+    mapRefresh: true
+  };
+
   let outputs = dungeon.getOutputs(gameState.globals);
   outputs.mapRefresh = gameState.globals.mapRefresh;
   return outputs;

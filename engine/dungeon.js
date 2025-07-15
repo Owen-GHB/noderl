@@ -627,6 +627,37 @@ class DungeonFloor extends Terrain {
 	}
 }
 
+class Dungeon {
+  constructor(gameState) {
+    this.currentFloor = gameState.currentFloor;
+    this.floors = {};
+
+    for (const floor in gameState.terrain) {
+      const floorData = {
+        terrain: gameState.terrain[floor],
+        creatures: gameState.creatures[floor],
+        items: gameState.items[floor],
+        explored: gameState.explored[floor],
+        decals: gameState.decals[floor],
+        visible: gameState.visible[floor]
+      };
+      this.floors[floor] = new DungeonFloor(
+        new Terrain({ x: 60, y: 60 }, floorData.terrain),
+        floorData.creatures,
+        floorData.items,
+        floorData.explored,
+        floorData.decals,
+        floorData.visible
+      );
+    }
+  }
+
+  getCurrentFloor() {
+    return this.floors[this.currentFloor];
+  }
+}
+
 module.exports = {
+  Dungeon,
   DungeonFloor
 };

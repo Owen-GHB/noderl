@@ -482,18 +482,13 @@ function makeLevel(dungeon, floor, charName) {
 
 function initGameState() {
   return {
-    globals: {
-      automove: false,
-      animations: [],
-      eventLog: [],
-      mapRefresh: true
-    },
-    terrain: [],
-    decals: [],
-    creatures: [],
-    items: [],
-    explored: [],
-    visible: []
+    currentFloor: 1,
+    terrain: {},
+    decals: {},
+    creatures: {},
+    items: {},
+    explored: {},
+    visible: {}
   };
 }
 
@@ -511,7 +506,8 @@ function makeLevels(gameState, charName) {
     gameState.visible[floor] = dungeon.visible;
   }
   gameState.currentFloor = 1;
-  return { gameState, dungeon };
+  const newDungeon = new Dungeon(gameState);
+  return { gameState, dungeon: newDungeon.getCurrentFloor() };
 }
 
 module.exports = {
