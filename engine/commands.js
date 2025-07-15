@@ -90,8 +90,11 @@ function startFromSavefile(charName) {
     console.error('Error saving game state for start:', err);
   }
 
-  const dungeonObj = new Dungeon(gameState);
-  dungeon = dungeonObj.getCurrentFloor();
+  let dungeonObj;
+  if (typeof dungeon === 'undefined') {
+    dungeonObj = new Dungeon(gameState);
+    dungeon = dungeonObj.getCurrentFloor();
+  }
 
   gameState.globals = {
     automove: false,

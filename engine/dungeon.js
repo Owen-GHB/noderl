@@ -25,7 +25,7 @@ class DungeonFloor extends Terrain {
 	  this.terrain = terrain;
 	  this.boardsize = boardsize;
 	  this.creatures = [];
-	  if (creatures !== undefined) this.loadCreatures(creatures);
+	  if (creatures) this.loadCreatures(creatures);
 	  this.items = (items !== undefined) ? items : {};
 	  this.explored = (explored !== undefined) ? explored : [];
 	  this.decals = (decals !== undefined) ? decals : {};
