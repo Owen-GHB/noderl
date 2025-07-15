@@ -6,7 +6,7 @@ const { Item } = require('./item.js');
 const { Spell } = require('./spell.js');
 const { createCanvas } = require('canvas');
 
-class Dungeon extends Terrain {
+class DungeonFloor extends Terrain {
 	constructor(thisspace, creatures, items, explored, decals, visible) {
 	  let terrain = [];
 	  let boardsize = { x: 60, y: 60 };
@@ -628,5 +628,5 @@ class Dungeon extends Terrain {
 }
 
 module.exports = {
-  Dungeon
+  DungeonFloor
 };

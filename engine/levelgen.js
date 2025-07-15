@@ -1,6 +1,6 @@
 // Import required modules and dependencies
 const { Terrain, DungeonSpace } = require('./mapclass.js');
-const { Dungeon } = require('./dungeon.js');
+const { DungeonFloor } = require('./dungeon.js');
 const fs = require('fs');
 
 function buildRandomPath(toFill, sectorSpace) {
@@ -500,7 +500,7 @@ function initGameState() {
 function makeLevels(gameState, charName) {
   let dungeon;
   for (let floor = 9; floor > 0; floor--) {
-    dungeon = new Dungeon();
+    dungeon = new DungeonFloor();
     dungeon = makeLevel(dungeon, floor, charName);
 
     gameState.terrain[floor] = dungeon.terrain;
@@ -518,3 +518,4 @@ module.exports = {
   initGameState,
   makeLevels
 };
+

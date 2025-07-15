@@ -3,7 +3,7 @@ const path = require('path');
 const { initGameState, makeLevels } = require('./levelgen.js');
 const { createCanvas, loadImage } = require('canvas');
 const { Terrain } = require('./mapclass.js');
-const { Dungeon } = require('./dungeon.js');
+const { DungeonFloor } = require('./dungeon.js');
 const { saveGame, loadGame, savefileExists } = require('./savefile.js');
 
 function processDungeon(command, modifier, gameState) {
@@ -17,7 +17,7 @@ function processDungeon(command, modifier, gameState) {
 
   const boardSize = { x: 60, y: 60 };
   const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
-  let dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
+  let dungeon = new DungeonFloor(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
 
   if (dungeon.creatures[0].hp > 0) {
     dungeon.movePlayer(command, modifier, gameState.globals);
@@ -44,7 +44,7 @@ function processDungeon(command, modifier, gameState) {
     let visible = gameState.visible[gameState.currentFloor];
 
     const dungeonSpace = new Terrain(boardSize, terrain);
-    dungeon = new Dungeon(dungeonSpace, creatures, items, explored, decals, visible);
+    dungeon = new DungeonFloor(dungeonSpace, creatures, items, explored, decals, visible);
 	  const position = dungeon.creatures[0].position;
     dungeon.creatures[0] = JSON.parse(JSON.stringify(player));
     dungeon.creatures[0].position = position;
@@ -76,7 +76,7 @@ function returnMinimap(filename) {
       let gameState = loadGame(filename);
       const boardSize = { x: 60, y: 60 };
       const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
-      let dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
+      let dungeon = new DungeonFloor(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
       return dungeon.getMinimap();
 }
 
@@ -109,7 +109,7 @@ function startFromSavefile(charName) {
 
   if (typeof dungeon === 'undefined') {
     const dungeonSpace = new Terrain(boardSize, gameState.terrain[gameState.currentFloor]);
-    dungeon = new Dungeon(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
+    dungeon = new DungeonFloor(dungeonSpace, gameState.creatures[gameState.currentFloor], gameState.items[gameState.currentFloor], gameState.explored[gameState.currentFloor], gameState.decals[gameState.currentFloor], gameState.visible[gameState.currentFloor]);
   }
   let outputs = dungeon.getOutputs(gameState.globals);
   outputs.mapRefresh = gameState.globals.mapRefresh;
