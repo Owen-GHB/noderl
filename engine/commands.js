@@ -30,20 +30,20 @@ function processDungeon(command, modifier, gameState) {
   gameState.currentFloor = currentFloor.currentFloor;
 
   // Check if the current floor has changed
-  if (gameState.globals.currentFloor === dungeon.currentFloor) {
-    gameState.globals.mapRefresh = false;
-  } else {
+  if (gameState.globals.currentFloor !== currentFloor.currentFloor) {
     const player = currentFloor.creatures[0];
-    const oldFloor = gameState.globals.currentFloor;
-    const newFloor = dungeon.getCurrentFloor();
+    const newDungeon = new Dungeon(gameState);
+    const newFloor = newDungeon.getCurrentFloor();
 	  const position = newFloor.creatures[0].position;
     newFloor.creatures[0] = JSON.parse(JSON.stringify(player));
     newFloor.creatures[0].position = position;
-    gameState.creatures[dungeon.currentFloor] = newFloor.creatures;
+    gameState.creatures[newDungeon.currentFloor] = newFloor.creatures;
 	  gameState.globals.mapRefresh = true; 
+    return {gameState, dungeon: newFloor};
+  } else {
+    gameState.globals.mapRefresh = false;
+    return {gameState, dungeon: currentFloor};
   }
-
-  return {gameState, dungeon: currentFloor};
 }
 
 function processWithSavefile(command, modifier, filename) {
